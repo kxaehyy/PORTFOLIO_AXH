@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AXHIE — Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">A<span>X</span>HIE.</div>
+    <button class="menu-toggle" id="mobile-menu" aria-label="Menu">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul id="nav-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="portfolio.html" class="active">Portfolio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="register.html" class="login-btn" id="authBtn">Login/Register</a></li>
+    </ul>
+  </nav>
+
+  <div class="portfolio-header">
+    <div class="portfolio-header-inner">
+      <div class="section-label">My Work</div>
+      <h1>All <span>PROJECT</span> Outputs</h1>
+    </div>
+  </div>
+
+  <section class="projects">
+    <div class="portfolio-grid">
+
+      <!-- PETA 2 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="0" onclick="openLb(0, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project2/p2.png" alt="my_plainstatic_page"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 2</span>
+            <span class="peta-code">WS-L1.1S-OPB</span>
+          </div>
+          <h2>my_plainstatic_page</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/plain_static_page.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">A plain static webpage built using fundamental HTML structure — headings, paragraphs, lists, links, and images with minimal styling.</p>
+        </div>
+      </div>
+
+      <!-- PETA 3 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="1" onclick="openLb(1, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project3/p3.png" alt="my_enhanstatic_page"></div>
+            <div class="p-carousel-slide"><img src="images/project3/p3b.png" alt="my_enhanstatic_page"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+          <button class="p-arrow prev" onclick="goSlide(event,this,-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="p-arrow next" onclick="goSlide(event,this,+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="p-dots"><span class="p-dot active"></span><span class="p-dot"></span></div>
+          <div class="p-count">1 / 2</div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 3</span>
+            <span class="peta-code">WS-L1.2S-OPB</span>
+          </div>
+          <h2>my_enhanstatic_page</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/enhance_static_page.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">An enhanced version of the plain static page — adding CSS styling, layout structure, color schemes, and improved visual hierarchy.</p>
+        </div>
+      </div>
+
+      <!-- PETA 4 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="2" onclick="openLb(2, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project4/p4.png" alt="My Home & Story Page"></div>
+            <div class="p-carousel-slide"><img src="images/project4/p4b.png" alt="My Home & Story Page"></div>
+            <div class="p-carousel-slide"><img src="images/project4/p4c.png" alt="My Home & Story Page"></div>
+            <div class="p-carousel-slide"><img src="images/project4/p4d.png" alt="My Home & Story Page"></div>
+            <div class="p-carousel-slide"><img src="images/project4/p4e.png" alt="My Home & Story Page"></div>
+            <div class="p-carousel-slide"><img src="images/project4/p4f.png" alt="My Home & Story Page"></div>
+            <div class="p-carousel-slide"><img src="images/project4/p4g.png" alt="My Home & Story Page"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+          <button class="p-arrow prev" onclick="goSlide(event,this,-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="p-arrow next" onclick="goSlide(event,this,+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="p-dots">
+            <span class="p-dot active"></span><span class="p-dot"></span><span class="p-dot"></span>
+            <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+          </div>
+          <div class="p-count">1 / 7</div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 4</span>
+            <span class="peta-code">WS-L1.1S-OPB</span>
+          </div>
+          <h2>My Home &amp; Story Page</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/home_story_page.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">A narrative-driven home and story page layout built with responsive design principles, engaging visuals, and smooth user navigation.</p>
+        </div>
+      </div>
+
+      <!-- PETA 5 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="3" onclick="openLb(3, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project5/p5.png" alt="Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project5/p5b.png" alt="Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project5/p5c.png" alt="Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project5/p5d.png" alt="Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project5/p5e.png" alt="Educational Portfolio Website"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+          <button class="p-arrow prev" onclick="goSlide(event,this,-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="p-arrow next" onclick="goSlide(event,this,+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="p-dots">
+            <span class="p-dot active"></span><span class="p-dot"></span><span class="p-dot"></span>
+            <span class="p-dot"></span><span class="p-dot"></span>
+          </div>
+          <div class="p-count">1 / 5</div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 5</span>
+            <span class="peta-code">WS101 L3S-OB</span>
+          </div>
+          <h2>Educational Portfolio Website</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/educational_portfolio_v1.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">A structured academic portfolio showcasing coursework, creative outputs, and web design experiments built throughout my 2nd year BSIT studies.</p>
+        </div>
+      </div>
+
+      <!-- PETA 6 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="4" onclick="openLb(4, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project6/p6.png" alt="User-Centered Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project6/p6b.png" alt="User-Centered Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project6/p6c.png" alt="User-Centered Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project6/p6d.png" alt="User-Centered Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project6/p6e.png" alt="User-Centered Educational Portfolio Website"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+          <button class="p-arrow prev" onclick="goSlide(event,this,-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="p-arrow next" onclick="goSlide(event,this,+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="p-dots">
+            <span class="p-dot active"></span><span class="p-dot"></span><span class="p-dot"></span>
+            <span class="p-dot"></span><span class="p-dot"></span>
+          </div>
+          <div class="p-count">1 / 5</div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 6</span>
+            <span class="peta-code">EXP_OB&amp;WO-UCEPW</span>
+          </div>
+          <h2>User-Centered Educational Portfolio Website</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/user-centered-educational-portfolio-website.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">An enhanced educational portfolio redesigned around user-centered principles — improved navigation, accessibility, and content organization.</p>
+        </div>
+      </div>
+
+      <!-- PETA 7 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="5" onclick="openLb(5, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project7/p7.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7b.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7c.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7d.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7e.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7f.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7g.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7h.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7i.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7j.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7k.png" alt="Educational / Assistance Tool"></div>
+            <div class="p-carousel-slide"><img src="images/project7/p7l.png" alt="Educational / Assistance Tool"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+          <button class="p-arrow prev" onclick="goSlide(event,this,-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="p-arrow next" onclick="goSlide(event,this,+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="p-dots">
+            <span class="p-dot active"></span><span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+            <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+            <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+          </div>
+          <div class="p-count">1 / 12</div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 7</span>
+            <span class="peta-code">WS101 PTL4_01</span>
+          </div>
+          <h2>Educational / Assistance Tool</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/educational_assistance_tool.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <div class="visit-dropdown" style="position:relative;">
+              <button class="card-link secondary visit-toggle" style="margin-top:0;padding:5px 13px;font-size:0.68rem;cursor:pointer;border:1px solid rgba(255,255,255,0.07);border-radius:4px;background:transparent;color:#555;font-family:'DM Sans',sans-serif;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;display:inline-flex;align-items:center;gap:5px;transition:all 0.22s;">
+                <i class="fas fa-external-link-alt"></i> Visit Site <i class="fas fa-chevron-down" style="font-size:0.55rem;"></i>
+              </button>
+              <div class="visit-menu" style="display:none;position:absolute;bottom:calc(100% + 6px);left:0;min-width:130px;background:#1c1c1c;border:1px solid rgba(61,255,160,0.18);border-radius:6px;overflow:hidden;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+                <a href="https://kxaehyy.github.io/educational_assistance_tool/navi_assistance_tool/" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:0.68rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#e8e8e8;text-decoration:none;transition:background 0.2s,color 0.2s;">
+                  <i class="fas fa-compass" style="color:#3dffa0;font-size:0.65rem;"></i> Navi
+                </a>
+                <div style="height:1px;background:rgba(255,255,255,0.06);"></div>
+                <a href="https://kxaehyy.github.io/educational_assistance_tool/quizly/" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:0.68rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#e8e8e8;text-decoration:none;transition:background 0.2s,color 0.2s;">
+                  <i class="fas fa-brain" style="color:#3dffa0;font-size:0.65rem;"></i> Quizly
+                </a>
+              </div>
+            </div>
+          </div>
+          <p class="description">A scripted AI-powered assistant tool designed to support learning — answering questions, organizing data, and guiding users through WS101 content.</p>
+        </div>
+      </div>
+
+      <!-- PETA 8 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="6" onclick="openLb(6, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project8/p8.png" alt="Basic Login Page"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 8</span>
+            <span class="peta-code">WS101-PTL5-M</span>
+          </div>
+          <h2>Basic Login Page</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/basic_login_page.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="https://kxaehyy.github.io/basic_login_page/login.html" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">A clean, functional login interface built with HTML/CSS — focusing on form structure, input styling, and basic authentication flow layout.</p>
+        </div>
+      </div>
+
+      <!-- PETA 9 -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="7" onclick="openLb(7, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project9/p9.png" alt="Login Page"></div>
+            <div class="p-carousel-slide"><img src="images/project9/p9b.png" alt="Registration Form"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+          <button class="p-arrow prev" onclick="goSlide(event,this,-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="p-arrow next" onclick="goSlide(event,this,+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="p-dots"><span class="p-dot active"></span><span class="p-dot"></span></div>
+          <div class="p-count">1 / 2</div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">PETA 9</span>
+            <span class="peta-code">WS101-PTL5.2-M</span>
+          </div>
+          <h2>Advanced Login Page + Registration Form</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/enhanced_login_v2.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="https://kxaehyy.github.io/enhanced_login_v2/login.html" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">A full authentication system with Google Sign-In, email/password login and registration, password strength meter, and route protection.</p>
+        </div>
+      </div>
+
+      <!-- Final PETA -->
+      <div class="project-card">
+        <div class="p-carousel" data-idx="8" onclick="openLb(8, slideOf(this))">
+          <div class="p-carousel-track">
+            <div class="p-carousel-slide"><img src="images/project10/p10.png" alt="Enhanced Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project10/p10b.png" alt="Enhanced Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project10/p10c.png" alt="Enhanced Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project10/p10d.png" alt="Enhanced Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project10/p10e.png" alt="Enhanced Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project10/p10f.png" alt="Enhanced Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project10/p10g.png" alt="Enhanced Educational Portfolio Website"></div>
+            <div class="p-carousel-slide"><img src="images/project10/p10h.png" alt="Enhanced Educational Portfolio Website"></div>
+          </div>
+          <div class="p-carousel-overlay"><i class="fas fa-expand-alt"></i></div>
+          <button class="p-arrow prev" onclick="goSlide(event,this,-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="p-arrow next" onclick="goSlide(event,this,+1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="p-dots">
+            <span class="p-dot active"></span><span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+            <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+          </div>
+          <div class="p-count">1 / 8</div>
+        </div>
+        <div class="p-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="peta-badge">Final PETA</span>
+            <span class="peta-code">EXM_OB-EEPW</span>
+          </div>
+          <h2>Enhanced Educational Portfolio Website</h2>
+          <button class="show-more">Details</button>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;">
+            <a href="https://github.com/kxaehyy/enhanced_educ_portfolio_v3.git" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="https://kxaehyy.github.io/enhanced_educ_portfolio_v3/home.html" class="card-link secondary" target="_blank" style="margin-top:0;padding:5px 13px;font-size:0.68rem;"><i class="fas fa-external-link-alt"></i> Visit Site</a>
+          </div>
+          <p class="description">This site — the capstone PETA submission. A live, authenticated, navigable educational portfolio housing all WS101 outputs under one URL.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="collection-section">
+    <div class="section-label">Media</div>
+    <h2 class="section-title">COLLE<span>CTION</span></h2>
+    <div class="collection-grid collection-grid--unified">
+
+      <div class="media-box media-box--video">
+        <div class="media-box-header">
+          <div class="media-box-icon"><i class="fab fa-tiktok"></i></div>
+          <div class="media-box-header-text">
+            <h2 id="vid-title">TikTok Video 1</h2>
+            <p id="vid-subtitle">CHAINSAW MAN</p>
+          </div>
+        </div>
+
+        <video id="main-video" controls style="width:100%;border-radius:8px;">
+          <source id="main-video-src" src="uploads/vid.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        <div class="vid-dropdown-bar">
+          <span class="vid-dropdown-label"><i class="fas fa-film"></i> More video</span>
+          <select id="vid-select" class="vid-select">
+            <option value="uploads/vid.mp4"  data-title="TikTok Video 1" data-sub="CHAINSAW MAN">Video 1 — Chainsaw Man</option>
+            <option value="uploads/vid2.mp4" data-title="TikTok Video 2" data-sub="DARLING IN THE FRANXX">Video 2 — Darling in the Franxx</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="media-box media-box--audio">
+        <div class="media-box-header">
+          <div class="media-box-icon"><i class="fas fa-music"></i></div>
+          <div class="media-box-header-text">
+            <h2>Music Tracks</h2>
+            <p>Featured songs</p>
+          </div>
+        </div>
+
+        <div class="audio-track">
+          <div class="audio-track-meta">
+            <span class="audio-track-num">01</span>
+            <div><h3>Libu-Libong Buwan</h3><p>Kyle Raphael</p></div>
+          </div>
+          <audio controls><source src="uploads/aud.mp3" type="audio/mpeg"></audio>
+        </div>
+
+        <div class="audio-track">
+          <div class="audio-track-meta">
+            <span class="audio-track-num">02</span>
+            <div><h3>Panaginip</h3><p>Nicole</p></div>
+          </div>
+          <audio controls><source src="uploads/aud2.mp3" type="audio/mpeg"></audio>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox" onclick="closeLbOutside(event)">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" onclick="closeLb()"><i class="fas fa-times"></i></button>
+      <button class="lightbox-prev" id="lb-prev" onclick="lbNav(-1)"><i class="fas fa-chevron-left"></i></button>
+      <button class="lightbox-next" id="lb-next" onclick="lbNav(+1)"><i class="fas fa-chevron-right"></i></button>
+      <img class="lightbox-img" id="lb-img" src="" alt="">
+      <div class="lightbox-caption">
+        <div class="lb-left">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span class="peta-badge" id="lb-badge"></span>
+            <span class="lb-code" id="lb-code"></span>
+          </div>
+          <span class="lb-title" id="lb-title"></span>
+        </div>
+        <span class="lb-counter" id="lb-counter"></span>
+      </div>
+      <div class="lightbox-hint">ESC to close &nbsp;·&nbsp; ← → to navigate</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 AXHIE. All Rights Reserved.</p>
+    <div class="socials">
+      <a href="https://www.facebook.com/profile.php?id=61567807212645" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+      <a href="https://github.com/kxaehyy" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://www.instagram.com/ngl.ky" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    const vidSelect = document.getElementById('vid-select');
+    if (vidSelect) {
+      vidSelect.addEventListener('change', function () {
+        const opt   = this.options[this.selectedIndex];
+        const video = document.getElementById('main-video');
+        const src   = document.getElementById('main-video-src');
+        src.src = opt.value;
+        video.load();
+        document.getElementById('vid-title').textContent    = opt.dataset.title;
+        document.getElementById('vid-subtitle').textContent = opt.dataset.sub;
+      });
+    }
+
+    const musicBtn     = document.getElementById('musicToggleBtn');
+    const hiddenTracks = document.querySelectorAll('.audio-track.hidden-track');
+    let musicOpen = false;
+
+    if (musicBtn) {
+      musicBtn.addEventListener('click', function () {
+        musicOpen = !musicOpen;
+        hiddenTracks.forEach(track => {
+          if (musicOpen) {
+            track.classList.add('revealed');
+          } else {
+            track.classList.remove('revealed');
+            const aud = track.querySelector('audio');
+            if (aud) { aud.pause(); aud.currentTime = 0; }
+          }
+        });
+        musicBtn.classList.toggle('open', musicOpen);
+        musicBtn.innerHTML = musicOpen
+          ? '<i class="fas fa-chevron-up"></i> Show Less'
+          : '<i class="fas fa-chevron-down"></i> Show 3 More Tracks';
+      });
+    }
+  </script>
+</body>
+</html>

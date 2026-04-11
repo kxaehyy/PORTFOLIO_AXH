@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AXHIE — Register</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+  <section class="form-section">
+    <div class="form-box">
+
+      <div class="form-logo">A<span>X</span>HIE.</div>
+      <h2><span>Create</span> Account</h2>
+      <p class="subtitle">Join to access the full WS101 portfolio.</p>
+
+      <div class="auth-error" id="authError"></div>
+
+      <form id="registerForm">
+
+        <div class="input-field">
+          <label for="fullname">Full Name</label>
+          <div class="input-wrap">
+            <i class="fas fa-user field-icon"></i>
+            <input type="text" id="fullname" placeholder="Enter your full name" autocomplete="name">
+          </div>
+          <div class="form-field-error" id="fullname-err">Please enter your full name.</div>
+        </div>
+
+        <div class="input-field">
+          <label for="email">Email Address</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope field-icon"></i>
+            <input type="email" id="email" placeholder="example@gmail.com" autocomplete="email">
+          </div>
+          <div class="form-field-error" id="email-err">Please enter a valid email address.</div>
+        </div>
+
+        <div class="input-field">
+          <label for="regPassword">Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock field-icon"></i>
+            <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" oninput="checkStrength(this.value)">
+            <button type="button" class="toggle-pw" onclick="togglePw('regPassword', this)" aria-label="Show password">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="strength-wrap">
+            <div class="strength-bar-bg"><div class="strength-bar" id="strengthBar"></div></div>
+            <span class="strength-label" id="strengthLabel">Enter a password</span>
+          </div>
+          <div class="form-field-error" id="pass-err">Password must be at least 8 characters.</div>
+        </div>
+
+        <div class="input-field">
+          <label for="confirmPass">Confirm Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-shield-alt field-icon"></i>
+            <input type="password" id="confirmPass" placeholder="••••••••" autocomplete="new-password">
+            <button type="button" class="toggle-pw" onclick="togglePw('confirmPass', this)" aria-label="Show password">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="form-field-error" id="confirm-err">Passwords do not match.</div>
+        </div>
+
+        <button type="submit" class="btn" id="registerBtn" style="margin-top:6px;">
+          <i class="fas fa-user-plus"></i> Register Now
+        </button>
+
+        <div class="separator"><span>Or continue with</span></div>
+        <div id="googleBtn"></div>
+
+        <p class="terms">By registering you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+        <p class="switch-form">Already have an account? <a href="login.html">Login here</a></p>
+      </form>
+
+    </div>
+  </section>
+
+  <script>
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      const icon  = btn.querySelector("i");
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      icon.classList.toggle("fa-eye",      !isHidden);
+      icon.classList.toggle("fa-eye-slash", isHidden);
+    }
+
+    function checkStrength(val) {
+      const bar = document.getElementById("strengthBar");
+      const lbl = document.getElementById("strengthLabel");
+      let score = 0;
+      if (val.length >= 8)          score++;
+      if (/[A-Z]/.test(val))        score++;
+      if (/[0-9]/.test(val))        score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const levels = [
+        { w:"0%",   bg:"transparent", text:"Enter a password" },
+        { w:"25%",  bg:"#ff5555",     text:"Weak"             },
+        { w:"50%",  bg:"#ff9900",     text:"Fair"             },
+        { w:"75%",  bg:"#ffdd00",     text:"Good"             },
+        { w:"100%", bg:"#3dffa0",     text:"Strong"           },
+      ];
+      const lvl = val.length === 0 ? levels[0] : levels[Math.min(score, 4)];
+      bar.style.width      = lvl.w;
+      bar.style.background = lvl.bg;
+      lbl.textContent      = lvl.text;
+      lbl.style.color      = lvl.bg === "transparent" ? "var(--muted)" : lvl.bg;
+    }
+
+    function validate(id, errId, fn) {
+      const el  = document.getElementById(id);
+      const err = document.getElementById(errId);
+      const ok  = fn(el.value.trim());
+      el.classList.toggle("error", !ok);
+      err.classList.toggle("show", !ok);
+      return ok;
+    }
+    function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+    document.getElementById("fullname").addEventListener("blur",    () => validate("fullname",    "fullname-err", v => v.length > 0));
+    document.getElementById("email").addEventListener("blur",       () => validate("email",       "email-err",    v => isEmail(v)));
+    document.getElementById("regPassword").addEventListener("blur", () => validate("regPassword", "pass-err",     v => v.length >= 8));
+    document.getElementById("confirmPass").addEventListener("blur", () => {
+      const pass = document.getElementById("regPassword").value;
+      const el   = document.getElementById("confirmPass");
+      const err  = document.getElementById("confirm-err");
+      const ok   = pass === el.value && el.value.length > 0;
+      el.classList.toggle("error", !ok);
+      err.classList.toggle("show", !ok);
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

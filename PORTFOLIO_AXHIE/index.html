@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AXHIE — Home</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">A<span>X</span>HIE.</div>
+    <button class="menu-toggle" id="mobile-menu" aria-label="Menu">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul id="nav-list">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="register.html" class="login-btn" id="authBtn">Login/Register</a></li>
+    </ul>
+  </nav>
+
+  <section class="main main-center">
+    <div class="hero-bg"></div>
+
+    <div class="info info-center">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Educational Portfolio — 2026
+      </div>
+      <h1>Hi, I'm <span>Angel Kaye.</span><br>Web Developer &amp; Designer.</h1>
+      <p>This site documents my journey — every PETA, project, and milestone. Browse freely and explore everything I've built.</p>
+      <div class="hero-actions hero-actions-center">
+        <a href="portfolio.html" class="btn-primary">
+          View Projects <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="about.html" class="btn-outline">About Me</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Scroll to explore
+    </div>
+  </section>
+
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-num">9+</div>
+      <div class="stat-label">Projects</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Year Level</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">BSIT</div>
+      <div class="stat-label">Course</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">OLSHCO</div>
+      <div class="stat-label">School</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 AXHIE. All Rights Reserved.</p>
+    <div class="socials">
+      <a href="https://www.facebook.com/profile.php?id=61567807212645" target="_blank" rel="noopener" aria-label="Facebook">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a href="https://github.com/kxaehyy" target="_blank" rel="noopener" aria-label="GitHub">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="https://www.instagram.com/ngl.ky" target="_blank" rel="noopener" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            setTimeout(() => {
+              e.target.style.opacity = "1";
+              e.target.style.transform = "translateY(0)";
+            }, i * 80);
+            observer.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll(".stat-item").forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(16px)";
+        el.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+        observer.observe(el);
+      });
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
