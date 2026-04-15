@@ -141,6 +141,66 @@
       el.classList.toggle("error", !ok);
       err.classList.toggle("show", !ok);
     });
+
+    const registerForm = document.getElementById('registerForm');
+    const registerBtn = document.getElementById('registerBtn');
+    const authError = document.getElementById('authError');
+
+    if (registerForm) {
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const pass = document.getElementById("regPassword").value;
+        const confirmOk = pass === document.getElementById("confirmPass").value && document.getElementById("confirmPass").value.length > 0;
+
+        const ok = [
+          validate('fullname', 'fullname-err', v => v.length > 0),
+          validate('email', 'email-err', v => isEmail(v)),
+          validate('regPassword', 'pass-err', v => v.length >= 8),
+          confirmOk
+        ].every(Boolean);
+
+        if (!ok) return;
+
+        const fullname = document.getElementById('fullname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('regPassword').value;
+
+        registerBtn.disabled = true;
+        registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+        authError.style.display = 'none';
+
+        const payload = {
+          fullname: fullname,
+          email: email,
+          password: password
+        };
+
+        try {
+          const response = await fetch('php/api_register.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          
+          const result = await response.json();
+          registerBtn.disabled = false;
+          registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+
+          if (response.ok) {
+            window.location.href = 'login.html'; // Redirect to login on success
+          } else {
+            authError.textContent = result.message || "Registration failed.";
+            authError.style.display = 'block';
+          }
+        } catch (error) {
+          registerBtn.disabled = false;
+          registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+          authError.textContent = "Network error: Could not reach the server.";
+          authError.style.display = 'block';
+        }
+      });
+    }
   </script>
   <script src="script.js"></script>
 </body>

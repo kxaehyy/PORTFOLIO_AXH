@@ -77,8 +77,60 @@
     }
     function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
-    document.getElementById('loginUser').addEventListener('blur', () => validate('loginUser','loginUser-err', v => isEmail(v)));
-    document.getElementById('loginPass').addEventListener('blur', () => validate('loginPass','loginPass-err', v => v.length > 0));
+    const loginUser = document.getElementById('loginUser');
+    const loginPass = document.getElementById('loginPass');
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const authError = document.getElementById('authError');
+
+    if (loginUser) loginUser.addEventListener('blur', () => validate('loginUser','loginUser-err', v => isEmail(v)));
+    if (loginPass) loginPass.addEventListener('blur', () => validate('loginPass','loginPass-err', v => v.length > 0));
+
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const ok = [
+          validate('loginUser', 'loginUser-err', v => isEmail(v)),
+          validate('loginPass', 'loginPass-err', v => v.length > 0)
+        ].every(Boolean);
+
+        if (!ok) return;
+
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+        authError.style.display = 'none';
+
+        const payload = {
+          email: loginUser.value.trim(),
+          password: loginPass.value
+        };
+
+        try {
+          const response = await fetch('php/api_login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          
+          const result = await response.json();
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Account';
+
+          if (response.ok) {
+            window.location.href = 'index.html';
+          } else {
+            authError.textContent = result.message || "Sign in failed.";
+            authError.style.display = 'block';
+          }
+        } catch (error) {
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access Account';
+          authError.textContent = "Network error: Could not reach the server.";
+          authError.style.display = 'block';
+        }
+      });
+    }
   </script>
   <script src="script.js"></script>
 </body>

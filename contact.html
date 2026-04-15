@@ -155,7 +155,7 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); 
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
       const ok = [
         validate('fullname', 'fullname-err', v => v.length > 0),
         validate('email',    'email-err',    v => isEmail(v)),
@@ -169,27 +169,50 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
       
-      setTimeout(() => {
+      const payload = {
+        fullname: document.getElementById('fullname').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        subject: document.getElementById('subject').value.trim(),
+        message: document.getElementById('message').value.trim()
+      };
+
+      try {
+        const response = await fetch('php/api_contact.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-        
-        // Clear form
-        ['fullname', 'email', 'subject', 'message'].forEach(id => {
-          document.getElementById(id).value = '';
-          document.getElementById(id).classList.remove('error');
-        });
-        
-        // Hide error messages
-        ['fullname-err', 'email-err', 'subject-err', 'message-err'].forEach(id => {
-          document.getElementById(id).classList.remove('show');
-        });
-        
-        // Show success message
-        const toast = document.getElementById('toast');
-        toast.innerHTML = '<i class="fas fa-check-circle"></i> Message sent! I\'ll reply soon.';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3500);
-      }, 1600);
+
+        if (response.ok) {
+          // Clear form
+          ['fullname', 'email', 'subject', 'message'].forEach(id => {
+            document.getElementById(id).value = '';
+            document.getElementById(id).classList.remove('error');
+          });
+          
+          // Hide error messages
+          ['fullname-err', 'email-err', 'subject-err', 'message-err'].forEach(id => {
+            document.getElementById(id).classList.remove('show');
+          });
+          
+          // Show success message
+          const toast = document.getElementById('toast');
+          toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + result.message;
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 3500);
+        } else {
+          alert('Error: ' + result.message);
+        }
+      } catch (error) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+        alert('Network error: Could not reach the server.');
+      }
     }
 
     // Add event listeners when DOM is ready
