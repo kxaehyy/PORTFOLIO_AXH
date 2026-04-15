@@ -5,19 +5,7 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-$host = "localhost";
-$db_name = "portfolio_axh";
-$username = "root";
-$password = "";
-
-try {
-    $conn = new PDO("mysql:host=" . $host . ";dbname=" . $db_name, $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $exception) {
-    http_response_code(500);
-    echo json_encode(array("message" => "Database connection error: " . $exception->getMessage()));
-    exit();
-}
+include_once 'db_config.php';
 
 $data = json_decode(file_get_contents("php://input"));
 

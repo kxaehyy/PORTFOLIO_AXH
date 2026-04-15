@@ -167,37 +167,49 @@ function handleCredentialResponse(response) {
 }
 
 // ========== LOGIN FORM ==========
-document.getElementById("loginForm")?.addEventListener("submit", function (e) {
+document.getElementById("loginForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const emailInput = (document.getElementById("loginUser") || document.getElementById("username"))?.value?.trim();
   const passInput = (document.getElementById("loginPass") || document.getElementById("password"))?.value;
 
-  const stored = JSON.parse(sessionStorage.getItem("userAccount") || localStorage.getItem("userAccount") || "null");
+  const btn = document.getElementById("loginBtn");
+  if (!btn) return;
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
 
-  if (!stored) {
-    showAuthError("No account found. Please register first.");
-    return;
-  }
-  if (emailInput !== stored.email) {
-    showAuthError("Invalid email or password.");
-    return;
-  }
-  if (passInput !== stored.password) {
-    showAuthError("Invalid email or password.");
-    return;
-  }
+  try {
+    const response = await fetch("php/api_login.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: emailInput, password: passInput })
+    });
 
-  sessionStorage.setItem("isLoggedIn", "true");
-  sessionStorage.setItem("loginTime", Date.now().toString());
-  startSessionTimer();
+    const result = await response.json();
 
-  const redirect = sessionStorage.getItem("redirectAfterLogin") || "portfolio.html";
-  sessionStorage.removeItem("redirectAfterLogin");
-  window.location.href = redirect;
+    if (response.ok) {
+      sessionStorage.setItem("userAccount", JSON.stringify(result.user));
+      sessionStorage.setItem("isLoggedIn", "true");
+      sessionStorage.setItem("loginTime", Date.now().toString());
+      startSessionTimer();
+
+      const redirect = sessionStorage.getItem("redirectAfterLogin") || "portfolio.html";
+      sessionStorage.removeItem("redirectAfterLogin");
+      window.location.href = redirect;
+    } else {
+      showAuthError(result.message || "Invalid email or password.");
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  } catch (error) {
+    showAuthError("Network error: Could not reach the server.");
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
 });
 
 // ========== REGISTER FORM ==========
-document.getElementById("registerForm")?.addEventListener("submit", function (e) {
+document.getElementById("registerForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const fullName = document.getElementById("fullname").value.trim();
   const email = document.getElementById("email").value.trim();
@@ -208,10 +220,33 @@ document.getElementById("registerForm")?.addEventListener("submit", function (e)
     return;
   }
 
-  const newUser = { fullname: fullName, email: email, password: pass };
-  sessionStorage.setItem("userAccount", JSON.stringify(newUser));
-  localStorage.setItem("userAccount", JSON.stringify(newUser));
-  window.location.href = "login.html";
+  const btn = document.getElementById("registerBtn");
+  if (!btn) return;
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+  try {
+    const response = await fetch("php/api_register.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullname: fullName, email: email, password: pass })
+    });
+
+    const result = await response.json();
+
+    if (response.ok || response.status === 201) {
+      window.location.href = "login.html";
+    } else {
+      showAuthError(result.message || "Registration failed.");
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  } catch (error) {
+    showAuthError("Network error: Could not reach the server.");
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
 });
 
 function showAuthError(msg) {
