@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SECURITY HEADERS -->
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self'">
+  
   <title>AXHIE — Contact</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -67,7 +74,6 @@
       </div>
 
       <div class="contact-details">
-
         <div class="availability">
           <span class="avail-dot"></span>
           <p>Open to feedback and collaboration.</p>
@@ -135,6 +141,7 @@
   </footer>
 
   <script>
+    // Validation and form handling
     function validate(id, errId, fn) {
       const el = document.getElementById(id);
       const err = document.getElementById(errId);
@@ -143,39 +150,69 @@
       err.classList.toggle('show', !ok);
       return ok;
     }
-    function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    
+    function isEmail(v) { 
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); 
+    }
 
     function handleSubmit() {
-      if (!getSession()) {
-        showLoginPrompt();
-        return;
-      }
-
       const ok = [
         validate('fullname', 'fullname-err', v => v.length > 0),
         validate('email',    'email-err',    v => isEmail(v)),
         validate('subject',  'subject-err',  v => v.length > 0),
         validate('message',  'message-err',  v => v.length >= 10),
       ].every(Boolean);
+      
       if (!ok) return;
 
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      
       setTimeout(() => {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-        ['fullname','email','subject','message'].forEach(id => document.getElementById(id).value = '');
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3500);
+        
+        // Clear form
+        ['fullname', 'email', 'subject', 'message'].forEach(id => {
+          document.getElementById(id).value = '';
+          document.getElementById(id).classList.remove('error');
+        });
+        
+        // Hide error messages
+        ['fullname-err', 'email-err', 'subject-err', 'message-err'].forEach(id => {
+          document.getElementById(id).classList.remove('show');
+        });
+        
+        // Show success message
+        const toast = document.getElementById('toast');
+        toast.innerHTML = '<i class="fas fa-check-circle"></i> Message sent! I\'ll reply soon.';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
       }, 1600);
     }
 
-    document.getElementById('fullname').addEventListener('blur', () => validate('fullname','fullname-err', v => v.length > 0));
-    document.getElementById('email').addEventListener('blur',    () => validate('email','email-err', v => isEmail(v)));
-    document.getElementById('subject').addEventListener('blur',  () => validate('subject','subject-err', v => v.length > 0));
-    document.getElementById('message').addEventListener('blur',  () => validate('message','message-err', v => v.length >= 10));
+    // Add event listeners when DOM is ready
+    document.addEventListener("DOMContentLoaded", () => {
+      const fullname = document.getElementById('fullname');
+      const email = document.getElementById('email');
+      const subject = document.getElementById('subject');
+      const message = document.getElementById('message');
+      
+      if (fullname) fullname.addEventListener('blur', () => validate('fullname','fullname-err', v => v.length > 0));
+      if (email) email.addEventListener('blur', () => validate('email','email-err', v => isEmail(v)));
+      if (subject) subject.addEventListener('blur', () => validate('subject','subject-err', v => v.length > 0));
+      if (message) message.addEventListener('blur', () => validate('message','message-err', v => v.length >= 10));
+      
+      // Mobile menu toggle (if needed)
+      const mobileBtn = document.getElementById('mobile-menu');
+      const navList = document.getElementById('nav-list');
+      if (mobileBtn && navList) {
+        mobileBtn.addEventListener('click', () => {
+          navList.classList.toggle('show');
+        });
+      }
+    });
   </script>
   <script src="script.js"></script>
 </body>
