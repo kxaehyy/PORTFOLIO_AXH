@@ -8,7 +8,7 @@
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://accounts.google.com; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com; frame-src https://accounts.google.com;">
   
   <title>AXHIE — Contact</title>
   <link rel="stylesheet" href="style.css">
@@ -139,104 +139,6 @@
       <a href="https://www.instagram.com/ngl.ky" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
     </div>
   </footer>
-
-  <script>
-    // Validation and form handling
-    function validate(id, errId, fn) {
-      const el = document.getElementById(id);
-      const err = document.getElementById(errId);
-      const ok = fn(el.value.trim());
-      el.classList.toggle('error', !ok);
-      err.classList.toggle('show', !ok);
-      return ok;
-    }
-    
-    function isEmail(v) { 
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); 
-    }
-
-    async function handleSubmit() {
-      const ok = [
-        validate('fullname', 'fullname-err', v => v.length > 0),
-        validate('email',    'email-err',    v => isEmail(v)),
-        validate('subject',  'subject-err',  v => v.length > 0),
-        validate('message',  'message-err',  v => v.length >= 10),
-      ].every(Boolean);
-      
-      if (!ok) return;
-
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-      
-      const payload = {
-        fullname: document.getElementById('fullname').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        subject: document.getElementById('subject').value.trim(),
-        message: document.getElementById('message').value.trim()
-      };
-
-      try {
-        const response = await fetch('php/api_contact.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-
-        if (response.ok) {
-          // Clear form
-          ['fullname', 'email', 'subject', 'message'].forEach(id => {
-            document.getElementById(id).value = '';
-            document.getElementById(id).classList.remove('error');
-          });
-          
-          // Hide error messages
-          ['fullname-err', 'email-err', 'subject-err', 'message-err'].forEach(id => {
-            document.getElementById(id).classList.remove('show');
-          });
-          
-          // Show success message
-          const toast = document.getElementById('toast');
-          toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + result.message;
-          toast.classList.add('show');
-          setTimeout(() => toast.classList.remove('show'), 3500);
-        } else {
-          alert('Error: ' + result.message);
-        }
-      } catch (error) {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-        alert('Network error: Could not reach the server.');
-      }
-    }
-
-    // Add event listeners when DOM is ready
-    document.addEventListener("DOMContentLoaded", () => {
-      const fullname = document.getElementById('fullname');
-      const email = document.getElementById('email');
-      const subject = document.getElementById('subject');
-      const message = document.getElementById('message');
-      
-      if (fullname) fullname.addEventListener('blur', () => validate('fullname','fullname-err', v => v.length > 0));
-      if (email) email.addEventListener('blur', () => validate('email','email-err', v => isEmail(v)));
-      if (subject) subject.addEventListener('blur', () => validate('subject','subject-err', v => v.length > 0));
-      if (message) message.addEventListener('blur', () => validate('message','message-err', v => v.length >= 10));
-      
-      // Mobile menu toggle (if needed)
-      const mobileBtn = document.getElementById('mobile-menu');
-      const navList = document.getElementById('nav-list');
-      if (mobileBtn && navList) {
-        mobileBtn.addEventListener('click', () => {
-          navList.classList.toggle('show');
-        });
-      }
-    });
-  </script>
   <script src="script.js"></script>
 </body>
 </html>

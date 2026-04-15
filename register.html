@@ -8,7 +8,7 @@
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://accounts.google.com; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com; frame-src https://accounts.google.com;">
   
   <title>AXHIE — Register</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -51,7 +51,7 @@
           <div class="input-wrap">
             <i class="fas fa-lock field-icon"></i>
             <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" oninput="checkStrength(this.value)">
-            <button type="button" class="toggle-pw" onclick="togglePw('regPassword', this)" aria-label="Show password">
+            <button type="button" class="toggle-pw" data-target="regPassword" aria-label="Show password">
               <i class="fas fa-eye"></i>
             </button>
           </div>
@@ -67,7 +67,7 @@
           <div class="input-wrap">
             <i class="fas fa-shield-alt field-icon"></i>
             <input type="password" id="confirmPass" placeholder="••••••••" autocomplete="new-password">
-            <button type="button" class="toggle-pw" onclick="togglePw('confirmPass', this)" aria-label="Show password">
+            <button type="button" class="toggle-pw" data-target="confirmPass" aria-label="Show password">
               <i class="fas fa-eye"></i>
             </button>
           </div>
@@ -87,121 +87,6 @@
 
     </div>
   </section>
-
-  <script>
-    function togglePw(id, btn) {
-      const input = document.getElementById(id);
-      const icon  = btn.querySelector("i");
-      const isHidden = input.type === "password";
-      input.type = isHidden ? "text" : "password";
-      icon.classList.toggle("fa-eye",      !isHidden);
-      icon.classList.toggle("fa-eye-slash", isHidden);
-    }
-
-    function checkStrength(val) {
-      const bar = document.getElementById("strengthBar");
-      const lbl = document.getElementById("strengthLabel");
-      let score = 0;
-      if (val.length >= 8)          score++;
-      if (/[A-Z]/.test(val))        score++;
-      if (/[0-9]/.test(val))        score++;
-      if (/[^A-Za-z0-9]/.test(val)) score++;
-      const levels = [
-        { w:"0%",   bg:"transparent", text:"Enter a password" },
-        { w:"25%",  bg:"#ff5555",     text:"Weak"             },
-        { w:"50%",  bg:"#ff9900",     text:"Fair"             },
-        { w:"75%",  bg:"#ffdd00",     text:"Good"             },
-        { w:"100%", bg:"#3dffa0",     text:"Strong"           },
-      ];
-      const lvl = val.length === 0 ? levels[0] : levels[Math.min(score, 4)];
-      bar.style.width      = lvl.w;
-      bar.style.background = lvl.bg;
-      lbl.textContent      = lvl.text;
-      lbl.style.color      = lvl.bg === "transparent" ? "var(--muted)" : lvl.bg;
-    }
-
-    function validate(id, errId, fn) {
-      const el  = document.getElementById(id);
-      const err = document.getElementById(errId);
-      const ok  = fn(el.value.trim());
-      el.classList.toggle("error", !ok);
-      err.classList.toggle("show", !ok);
-      return ok;
-    }
-    function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-
-    document.getElementById("fullname").addEventListener("blur",    () => validate("fullname",    "fullname-err", v => v.length > 0));
-    document.getElementById("email").addEventListener("blur",       () => validate("email",       "email-err",    v => isEmail(v)));
-    document.getElementById("regPassword").addEventListener("blur", () => validate("regPassword", "pass-err",     v => v.length >= 8));
-    document.getElementById("confirmPass").addEventListener("blur", () => {
-      const pass = document.getElementById("regPassword").value;
-      const el   = document.getElementById("confirmPass");
-      const err  = document.getElementById("confirm-err");
-      const ok   = pass === el.value && el.value.length > 0;
-      el.classList.toggle("error", !ok);
-      err.classList.toggle("show", !ok);
-    });
-
-    const registerForm = document.getElementById('registerForm');
-    const registerBtn = document.getElementById('registerBtn');
-    const authError = document.getElementById('authError');
-
-    if (registerForm) {
-      registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const pass = document.getElementById("regPassword").value;
-        const confirmOk = pass === document.getElementById("confirmPass").value && document.getElementById("confirmPass").value.length > 0;
-
-        const ok = [
-          validate('fullname', 'fullname-err', v => v.length > 0),
-          validate('email', 'email-err', v => isEmail(v)),
-          validate('regPassword', 'pass-err', v => v.length >= 8),
-          confirmOk
-        ].every(Boolean);
-
-        if (!ok) return;
-
-        const fullname = document.getElementById('fullname').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('regPassword').value;
-
-        registerBtn.disabled = true;
-        registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
-        authError.style.display = 'none';
-
-        const payload = {
-          fullname: fullname,
-          email: email,
-          password: password
-        };
-
-        try {
-          const response = await fetch('php/api_register.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          
-          const result = await response.json();
-          registerBtn.disabled = false;
-          registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-
-          if (response.ok) {
-            window.location.href = 'login.html'; // Redirect to login on success
-          } else {
-            authError.textContent = result.message || "Registration failed.";
-            authError.style.display = 'block';
-          }
-        } catch (error) {
-          registerBtn.disabled = false;
-          registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-          authError.textContent = "Network error: Could not reach the server.";
-          authError.style.display = 'block';
-        }
-      });
-    }
-  </script>
   <script src="script.js"></script>
 </body>
 </html>

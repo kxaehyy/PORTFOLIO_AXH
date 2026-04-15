@@ -1,5 +1,7 @@
+// ========== GOOGLE CLIENT ID ==========
 const MY_CLIENT_ID = "556226911506-s859prkmlvqe54slrcfek6cdlga1csen.apps.googleusercontent.com";
 
+// ========== SESSION MANAGEMENT ==========
 const SESSION_DURATION = 30 * 60 * 1000;
 const WARN_BEFORE = 5 * 60 * 1000;
 
@@ -115,6 +117,7 @@ function checkAuth() {
 }
 checkAuth();
 
+// ========== GOOGLE SIGN-IN ==========
 window.onload = function () {
   if (typeof google !== "undefined" && google.accounts) {
     google.accounts.id.initialize({
@@ -131,6 +134,15 @@ window.onload = function () {
       });
     }
   }
+  
+  // Run page-specific initializations
+  initHomePage();
+  initAboutPage();
+  initContactPage();
+  initPortfolioPage();
+  initLoginPage();
+  initRegisterPage();
+  initMobileMenu();
 };
 
 function handleCredentialResponse(response) {
@@ -154,6 +166,7 @@ function handleCredentialResponse(response) {
   }
 }
 
+// ========== LOGIN FORM ==========
 document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
   const emailInput = (document.getElementById("loginUser") || document.getElementById("username"))?.value?.trim();
@@ -183,6 +196,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function (e) {
   window.location.href = redirect;
 });
 
+// ========== REGISTER FORM ==========
 document.getElementById("registerForm")?.addEventListener("submit", function (e) {
   e.preventDefault();
   const fullName = document.getElementById("fullname").value.trim();
@@ -348,6 +362,7 @@ function parseJwt(token) {
   ));
 }
 
+// ========== PROJECTS DATA ==========
 const PROJECTS = [
   { badge: "PETA 2", code: "WS-L1.1S-OPB", title: "my_plainstatic_page", images: ["images/project2/p2.png"] },
   { badge: "PETA 3", code: "WS-L1.2S-OPB", title: "my_enhanstatic_page", images: ["images/project3/p3.png", "images/project3/p3b.png"] },
@@ -429,7 +444,8 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowRight") lbNav(+1);
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+// ========== PORTFOLIO PAGE INIT ==========
+function initPortfolioPage() {
   document.querySelectorAll(".show-more").forEach(btn => {
     btn.addEventListener("click", () => {
       const desc = btn.closest(".p-info").querySelector(".description");
@@ -437,39 +453,26 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.textContent = open ? "Hide" : "Details";
     });
   });
-});
 
-const menuBtn = document.querySelector("#mobile-menu");
-const navListEl = document.querySelector("#nav-list");
-if (menuBtn && navListEl) {
-  menuBtn.addEventListener("click", () => {
-    navListEl.classList.toggle("active");
-    const icon = menuBtn.querySelector("i");
-    icon.classList.toggle("fa-bars");
-    icon.classList.toggle("fa-times");
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => {
+          e.target.style.opacity = "1";
+          e.target.style.transform = "translateY(0)";
+        }, i * 55);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+
+  document.querySelectorAll(".project-card, .media-box").forEach(c => {
+    c.style.opacity = "0";
+    c.style.transform = "translateY(16px)";
+    c.style.transition = "opacity 0.45s ease, transform 0.45s ease, border-color 0.3s, box-shadow 0.3s";
+    obs.observe(c);
   });
-}
 
-const obs = new IntersectionObserver(entries => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => {
-        e.target.style.opacity = "1";
-        e.target.style.transform = "translateY(0)";
-      }, i * 55);
-      obs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.07 });
-
-document.querySelectorAll(".project-card, .media-box").forEach(c => {
-  c.style.opacity = "0";
-  c.style.transform = "translateY(16px)";
-  c.style.transition = "opacity 0.45s ease, transform 0.45s ease, border-color 0.3s, box-shadow 0.3s";
-  obs.observe(c);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".visit-toggle").forEach(btn => {
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
@@ -487,11 +490,278 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", () => {
     document.querySelectorAll(".visit-menu").forEach(m => m.style.display = "none");
   });
-});
 
+  // Video selector
+  const vidSelect = document.getElementById('vid-select');
+  if (vidSelect) {
+    vidSelect.addEventListener('change', function () {
+      const opt = this.options[this.selectedIndex];
+      const video = document.getElementById('main-video');
+      const src = document.getElementById('main-video-src');
+      src.src = opt.value;
+      video.load();
+      document.getElementById('vid-title').textContent = opt.dataset.title;
+      document.getElementById('vid-subtitle').textContent = opt.dataset.sub;
+    });
+  }
+}
+
+// ========== HOME PAGE INIT ==========
+function initHomePage() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => {
+          e.target.style.opacity = "1";
+          e.target.style.transform = "translateY(0)";
+        }, i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".stat-item").forEach(el => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(16px)";
+    el.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+    observer.observe(el);
+  });
+}
+
+// ========== ABOUT PAGE INIT ==========
+function initAboutPage() {
+  const bars = document.querySelectorAll(".skill-bar");
+  const bObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("animate"); bObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(b => bObs.observe(b));
+
+  const cObs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => {
+          e.target.style.opacity = "1";
+          e.target.style.transform = "translateY(0)";
+        }, i * 60);
+        cObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".skill-card").forEach(c => {
+    c.style.opacity = "0";
+    c.style.transform = "translateY(14px)";
+    c.style.transition = "opacity 0.4s ease, transform 0.4s ease, border-color 0.28s, box-shadow 0.28s";
+    cObs.observe(c);
+  });
+}
+
+// ========== CONTACT PAGE INIT ==========
+function initContactPage() {
+  const fullname = document.getElementById('fullname');
+  const email = document.getElementById('email');
+  const subject = document.getElementById('subject');
+  const message = document.getElementById('message');
+  
+  if (fullname) fullname.addEventListener('blur', () => validateContact('fullname','fullname-err', v => v.length > 0));
+  if (email) email.addEventListener('blur', () => validateContact('email','email-err', v => isEmailContact(v)));
+  if (subject) subject.addEventListener('blur', () => validateContact('subject','subject-err', v => v.length > 0));
+  if (message) message.addEventListener('blur', () => validateContact('message','message-err', v => v.length >= 10));
+  
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.onclick = handleSubmit;
+  }
+}
+
+function validateContact(id, errId, fn) {
+  const el = document.getElementById(id);
+  const err = document.getElementById(errId);
+  const ok = fn(el.value.trim());
+  if (el) el.classList.toggle('error', !ok);
+  if (err) err.classList.toggle('show', !ok);
+  return ok;
+}
+
+function isEmailContact(v) { 
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); 
+}
+
+async function handleSubmit() {
+  const ok = [
+    validateContact('fullname', 'fullname-err', v => v.length > 0),
+    validateContact('email',    'email-err',    v => isEmailContact(v)),
+    validateContact('subject',  'subject-err',  v => v.length > 0),
+    validateContact('message',  'message-err',  v => v.length >= 10),
+  ].every(Boolean);
+  
+  if (!ok) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+  
+  const payload = {
+    fullname: document.getElementById('fullname').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    subject: document.getElementById('subject').value.trim(),
+    message: document.getElementById('message').value.trim()
+  };
+
+  try {
+    const response = await fetch('php/api_contact.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+
+    if (response.ok) {
+      ['fullname', 'email', 'subject', 'message'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.value = '';
+          el.classList.remove('error');
+        }
+      });
+      
+      ['fullname-err', 'email-err', 'subject-err', 'message-err'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('show');
+      });
+      
+      const toast = document.getElementById('toast');
+      if (toast) {
+        toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + result.message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+      }
+    } else {
+      alert('Error: ' + result.message);
+    }
+  } catch (error) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+    alert('Network error: Could not reach the server.');
+  }
+}
+
+// ========== LOGIN PAGE INIT ==========
+function initLoginPage() {
+  const loginUser = document.getElementById('loginUser');
+  const loginPass = document.getElementById('loginPass');
+  
+  if (loginUser) loginUser.addEventListener('blur', () => validateLogin('loginUser','loginUser-err', v => isEmailLogin(v)));
+  if (loginPass) loginPass.addEventListener('blur', () => validateLogin('loginPass','loginPass-err', v => v.length > 0));
+  
+  window.togglePw = function(id, btn) {
+    const input = document.getElementById(id);
+    const icon = btn.querySelector('i');
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    icon.classList.toggle('fa-eye', !isHidden);
+    icon.classList.toggle('fa-eye-slash', isHidden);
+  };
+}
+
+function validateLogin(id, errId, fn) {
+  const el = document.getElementById(id);
+  const err = document.getElementById(errId);
+  const ok = fn(el.value.trim());
+  if (el) el.classList.toggle('error', !ok);
+  if (err) err.classList.toggle('show', !ok);
+  return ok;
+}
+function isEmailLogin(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+// ========== REGISTER PAGE INIT ==========
+function initRegisterPage() {
+  const fullname = document.getElementById('fullname');
+  const email = document.getElementById('email');
+  const regPassword = document.getElementById('regPassword');
+  const confirmPass = document.getElementById('confirmPass');
+  
+  if (fullname) fullname.addEventListener('blur', () => validateReg('fullname', 'fullname-err', v => v.length > 0));
+  if (email) email.addEventListener('blur', () => validateReg('email', 'email-err', v => isEmailReg(v)));
+  if (regPassword) regPassword.addEventListener('blur', () => validateReg('regPassword', 'pass-err', v => v.length >= 8));
+  if (confirmPass) confirmPass.addEventListener('blur', () => {
+    const pass = document.getElementById('regPassword').value;
+    const el = document.getElementById('confirmPass');
+    const err = document.getElementById('confirm-err');
+    const ok = pass === el.value && el.value.length > 0;
+    if (el) el.classList.toggle('error', !ok);
+    if (err) err.classList.toggle('show', !ok);
+  });
+  
+  window.checkStrength = function(val) {
+    const bar = document.getElementById("strengthBar");
+    const lbl = document.getElementById("strengthLabel");
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const levels = [
+      { w:"0%", bg:"transparent", text:"Enter a password" },
+      { w:"25%", bg:"#ff5555", text:"Weak" },
+      { w:"50%", bg:"#ff9900", text:"Fair" },
+      { w:"75%", bg:"#ffdd00", text:"Good" },
+      { w:"100%", bg:"#3dffa0", text:"Strong" },
+    ];
+    const lvl = val.length === 0 ? levels[0] : levels[Math.min(score, 4)];
+    if (bar) bar.style.width = lvl.w;
+    if (bar) bar.style.background = lvl.bg;
+    if (lbl) lbl.textContent = lvl.text;
+    if (lbl) lbl.style.color = lvl.bg === "transparent" ? "var(--muted)" : lvl.bg;
+  };
+  
+  window.togglePw = function(id, btn) {
+    const input = document.getElementById(id);
+    const icon = btn.querySelector("i");
+    const isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+    icon.classList.toggle("fa-eye", !isHidden);
+    icon.classList.toggle("fa-eye-slash", isHidden);
+  };
+}
+
+function validateReg(id, errId, fn) {
+  const el = document.getElementById(id);
+  const err = document.getElementById(errId);
+  const ok = fn(el.value.trim());
+  if (el) el.classList.toggle('error', !ok);
+  if (err) err.classList.toggle('show', !ok);
+  return ok;
+}
+function isEmailReg(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+// ========== MOBILE MENU ==========
+function initMobileMenu() {
+  const menuBtn = document.querySelector("#mobile-menu");
+  const navListEl = document.querySelector("#nav-list");
+  if (menuBtn && navListEl) {
+    menuBtn.addEventListener("click", () => {
+      navListEl.classList.toggle("active");
+      const icon = menuBtn.querySelector("i");
+      if (icon) {
+        icon.classList.toggle("fa-bars");
+        icon.classList.toggle("fa-times");
+      }
+    });
+  }
+}
+
+// Add CSS animations
 const style = document.createElement("style");
 style.textContent = `
   @keyframes slideUp  { from { transform:translateX(-50%) translateY(16px); opacity:0; } to { transform:translateX(-50%) translateY(0); opacity:1; } }
   @keyframes fadeIn   { from { opacity:0 } to { opacity:1 } }
+  .skill-bar.animate { width: var(--w) !important; }
 `;
 document.head.appendChild(style);

@@ -8,7 +8,7 @@
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://accounts.google.com; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com; frame-src https://accounts.google.com;">
   
   <title>AXHIE — Portfolio</title>
   <link rel="stylesheet" href="style.css">
@@ -418,42 +418,5 @@
   </footer>
 
   <script src="script.js"></script>
-  <script>
-    const vidSelect = document.getElementById('vid-select');
-    if (vidSelect) {
-      vidSelect.addEventListener('change', function () {
-        const opt   = this.options[this.selectedIndex];
-        const video = document.getElementById('main-video');
-        const src   = document.getElementById('main-video-src');
-        src.src = opt.value;
-        video.load();
-        document.getElementById('vid-title').textContent    = opt.dataset.title;
-        document.getElementById('vid-subtitle').textContent = opt.dataset.sub;
-      });
-    }
-
-    const musicBtn     = document.getElementById('musicToggleBtn');
-    const hiddenTracks = document.querySelectorAll('.audio-track.hidden-track');
-    let musicOpen = false;
-
-    if (musicBtn) {
-      musicBtn.addEventListener('click', function () {
-        musicOpen = !musicOpen;
-        hiddenTracks.forEach(track => {
-          if (musicOpen) {
-            track.classList.add('revealed');
-          } else {
-            track.classList.remove('revealed');
-            const aud = track.querySelector('audio');
-            if (aud) { aud.pause(); aud.currentTime = 0; }
-          }
-        });
-        musicBtn.classList.toggle('open', musicOpen);
-        musicBtn.innerHTML = musicOpen
-          ? '<i class="fas fa-chevron-up"></i> Show Less'
-          : '<i class="fas fa-chevron-down"></i> Show 3 More Tracks';
-      });
-    }
-  </script>
 </body>
 </html>
