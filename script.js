@@ -124,6 +124,8 @@ window.onload = function () {
       client_id: MY_CLIENT_ID,
       callback: handleCredentialResponse
     });
+
+    // FIX: Render Google button into the correct container if it exists
     const googleBtnDiv = document.getElementById("googleBtn");
     if (googleBtnDiv) {
       google.accounts.id.renderButton(googleBtnDiv, {
@@ -133,9 +135,15 @@ window.onload = function () {
         shape: "pill"
       });
     }
+
+    // FIX: Wire up the fake Google buttons on login/register pages
+    document.querySelectorAll(".google-signin-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        google.accounts.id.prompt();
+      });
+    });
   }
-  
-  // Run page-specific initializations
+
   initHomePage();
   initAboutPage();
   initContactPage();
@@ -143,6 +151,22 @@ window.onload = function () {
   initLoginPage();
   initRegisterPage();
   initMobileMenu();
+
+  // FIX: Wire up all toggle-pw buttons via data-target attribute
+  document.querySelectorAll(".toggle-pw").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const targetId = this.dataset.target;
+      const input = document.getElementById(targetId);
+      if (!input) return;
+      const icon = this.querySelector("i");
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      if (icon) {
+        icon.classList.toggle("fa-eye", !isHidden);
+        icon.classList.toggle("fa-eye-slash", isHidden);
+      }
+    });
+  });
 };
 
 function handleCredentialResponse(response) {
@@ -179,6 +203,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
 
   try {
+    // FIX: Use relative path so fetch always goes to the same origin (avoids CORS/CSP issues)
     const response = await fetch("php/api_login.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -202,7 +227,8 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
       btn.innerHTML = originalText;
     }
   } catch (error) {
-    showAuthError("Network error: Could not reach the server.");
+    // FIX: More descriptive error to help debug
+    showAuthError("Network error: Could not reach the server. Make sure PHP is running and the path php/api_login.php is correct.");
     btn.disabled = false;
     btn.innerHTML = originalText;
   }
@@ -214,6 +240,13 @@ document.getElementById("registerForm")?.addEventListener("submit", async functi
   const fullName = document.getElementById("fullname").value.trim();
   const email = document.getElementById("email").value.trim();
   const pass = document.getElementById("regPassword").value;
+  const confirmPass = document.getElementById("confirmPass").value;
+
+  // FIX: Also validate confirm password before submitting
+  if (pass !== confirmPass) {
+    showAuthError("Passwords do not match.");
+    return;
+  }
 
   if (pass.length < 8) {
     showAuthError("Password must be at least 8 characters.");
@@ -243,7 +276,7 @@ document.getElementById("registerForm")?.addEventListener("submit", async functi
       btn.innerHTML = originalText;
     }
   } catch (error) {
-    showAuthError("Network error: Could not reach the server.");
+    showAuthError("Network error: Could not reach the server. Make sure PHP is running and the path php/api_register.php is correct.");
     btn.disabled = false;
     btn.innerHTML = originalText;
   }
@@ -253,8 +286,7 @@ function showAuthError(msg) {
   const el = document.getElementById("authError");
   if (!el) return;
   el.textContent = msg;
-  el.style.display = "block";
-  el.style.cssText += "color:#ff5555;background:rgba(255,85,85,0.08);border:1px solid rgba(255,85,85,0.3);padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:0.85rem;";
+  el.style.cssText = "display:block;color:#ff5555;background:rgba(255,85,85,0.08);border:1px solid rgba(255,85,85,0.3);padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:0.85rem;";
 }
 
 function logout() {
@@ -526,7 +558,6 @@ function initPortfolioPage() {
     document.querySelectorAll(".visit-menu").forEach(m => m.style.display = "none");
   });
 
-  // Video selector
   const vidSelect = document.getElementById('vid-select');
   if (vidSelect) {
     vidSelect.addEventListener('change', function () {
@@ -599,14 +630,15 @@ function initContactPage() {
   const email = document.getElementById('email');
   const subject = document.getElementById('subject');
   const message = document.getElementById('message');
-  
-  if (fullname) fullname.addEventListener('blur', () => validateContact('fullname','fullname-err', v => v.length > 0));
-  if (email) email.addEventListener('blur', () => validateContact('email','email-err', v => isEmailContact(v)));
-  if (subject) subject.addEventListener('blur', () => validateContact('subject','subject-err', v => v.length > 0));
-  if (message) message.addEventListener('blur', () => validateContact('message','message-err', v => v.length >= 10));
-  
+
+  if (fullname) fullname.addEventListener('blur', () => validateContact('fullname', 'fullname-err', v => v.length > 0));
+  if (email) email.addEventListener('blur', () => validateContact('email', 'email-err', v => isEmailContact(v)));
+  if (subject) subject.addEventListener('blur', () => validateContact('subject', 'subject-err', v => v.length > 0));
+  if (message) message.addEventListener('blur', () => validateContact('message', 'message-err', v => v.length >= 10));
+
   const submitBtn = document.getElementById('submitBtn');
   if (submitBtn) {
+    // FIX: Remove inline onclick from HTML and wire here to avoid double-firing
     submitBtn.onclick = handleSubmit;
   }
 }
@@ -620,8 +652,8 @@ function validateContact(id, errId, fn) {
   return ok;
 }
 
-function isEmailContact(v) { 
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); 
+function isEmailContact(v) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
 async function handleSubmit() {
@@ -631,13 +663,13 @@ async function handleSubmit() {
     validateContact('subject',  'subject-err',  v => v.length > 0),
     validateContact('message',  'message-err',  v => v.length >= 10),
   ].every(Boolean);
-  
+
   if (!ok) return;
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-  
+
   const payload = {
     fullname: document.getElementById('fullname').value.trim(),
     email: document.getElementById('email').value.trim(),
@@ -660,17 +692,13 @@ async function handleSubmit() {
     if (response.ok) {
       ['fullname', 'email', 'subject', 'message'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-          el.value = '';
-          el.classList.remove('error');
-        }
+        if (el) { el.value = ''; el.classList.remove('error'); }
       });
-      
       ['fullname-err', 'email-err', 'subject-err', 'message-err'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.remove('show');
       });
-      
+
       const toast = document.getElementById('toast');
       if (toast) {
         toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + result.message;
@@ -691,11 +719,12 @@ async function handleSubmit() {
 function initLoginPage() {
   const loginUser = document.getElementById('loginUser');
   const loginPass = document.getElementById('loginPass');
-  
-  if (loginUser) loginUser.addEventListener('blur', () => validateLogin('loginUser','loginUser-err', v => isEmailLogin(v)));
-  if (loginPass) loginPass.addEventListener('blur', () => validateLogin('loginPass','loginPass-err', v => v.length > 0));
-  
-  window.togglePw = function(id, btn) {
+
+  if (loginUser) loginUser.addEventListener('blur', () => validateLogin('loginUser', 'loginUser-err', v => isEmailLogin(v)));
+  if (loginPass) loginPass.addEventListener('blur', () => validateLogin('loginPass', 'loginPass-err', v => v.length > 0));
+
+  // togglePw is now handled globally via .toggle-pw data-target in window.onload
+  window.togglePw = function (id, btn) {
     const input = document.getElementById(id);
     const icon = btn.querySelector('i');
     const isHidden = input.type === 'password';
@@ -721,7 +750,7 @@ function initRegisterPage() {
   const email = document.getElementById('email');
   const regPassword = document.getElementById('regPassword');
   const confirmPass = document.getElementById('confirmPass');
-  
+
   if (fullname) fullname.addEventListener('blur', () => validateReg('fullname', 'fullname-err', v => v.length > 0));
   if (email) email.addEventListener('blur', () => validateReg('email', 'email-err', v => isEmailReg(v)));
   if (regPassword) regPassword.addEventListener('blur', () => validateReg('regPassword', 'pass-err', v => v.length >= 8));
@@ -733,8 +762,8 @@ function initRegisterPage() {
     if (el) el.classList.toggle('error', !ok);
     if (err) err.classList.toggle('show', !ok);
   });
-  
-  window.checkStrength = function(val) {
+
+  window.checkStrength = function (val) {
     const bar = document.getElementById("strengthBar");
     const lbl = document.getElementById("strengthLabel");
     let score = 0;
@@ -743,11 +772,11 @@ function initRegisterPage() {
     if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
     const levels = [
-      { w:"0%", bg:"transparent", text:"Enter a password" },
-      { w:"25%", bg:"#ff5555", text:"Weak" },
-      { w:"50%", bg:"#ff9900", text:"Fair" },
-      { w:"75%", bg:"#ffdd00", text:"Good" },
-      { w:"100%", bg:"#3dffa0", text:"Strong" },
+      { w: "0%", bg: "transparent", text: "Enter a password" },
+      { w: "25%", bg: "#ff5555", text: "Weak" },
+      { w: "50%", bg: "#ff9900", text: "Fair" },
+      { w: "75%", bg: "#ffdd00", text: "Good" },
+      { w: "100%", bg: "#3dffa0", text: "Strong" },
     ];
     const lvl = val.length === 0 ? levels[0] : levels[Math.min(score, 4)];
     if (bar) bar.style.width = lvl.w;
@@ -755,8 +784,9 @@ function initRegisterPage() {
     if (lbl) lbl.textContent = lvl.text;
     if (lbl) lbl.style.color = lvl.bg === "transparent" ? "var(--muted)" : lvl.bg;
   };
-  
-  window.togglePw = function(id, btn) {
+
+  // togglePw handled globally in window.onload
+  window.togglePw = function (id, btn) {
     const input = document.getElementById(id);
     const icon = btn.querySelector("i");
     const isHidden = input.type === "password";
@@ -792,7 +822,7 @@ function initMobileMenu() {
   }
 }
 
-// Add CSS animations
+// ========== CSS ANIMATIONS ==========
 const style = document.createElement("style");
 style.textContent = `
   @keyframes slideUp  { from { transform:translateX(-50%) translateY(16px); opacity:0; } to { transform:translateX(-50%) translateY(0); opacity:1; } }
