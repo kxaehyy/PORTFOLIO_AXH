@@ -11,11 +11,12 @@ $data = json_decode(file_get_contents("php://input"));
 
 if (!empty($data->email) && !empty($data->password)) {
     
-    $query = "SELECT id, fullname, password FROM users WHERE email = :email LIMIT 0,1";
+    // Check if the input matches email or fullname (username)
+    $query = "SELECT id, fullname, password, email FROM users WHERE email = :identifier OR fullname = :identifier LIMIT 0,1";
     $stmt = $conn->prepare($query);
     
-    $email = htmlspecialchars(strip_tags($data->email));
-    $stmt->bindParam(":email", $email);
+    $identifier = htmlspecialchars(strip_tags($data->email));
+    $stmt->bindParam(":identifier", $identifier);
     $stmt->execute();
     
     $num = $stmt->rowCount();
@@ -24,7 +25,6 @@ if (!empty($data->email) && !empty($data->password)) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $password_hash = $row['password'];
         
-        // Check if password matches
         if(password_verify($data->password, $password_hash)) {
             http_response_code(200);
             echo json_encode(array(
@@ -32,19 +32,19 @@ if (!empty($data->email) && !empty($data->password)) {
                 "user" => array(
                     "id" => $row['id'],
                     "fullname" => $row['fullname'],
-                    "email" => $email
+                    "email" => $row['email']
                 )
             ));
         } else {
             http_response_code(401);
-            echo json_encode(array("message" => "Invalid email or password."));
+            echo json_encode(array("message" => "Invalid username or password."));
         }
     } else {
         http_response_code(401);
-        echo json_encode(array("message" => "Invalid email or password."));
+        echo json_encode(array("message" => "Invalid username or password."));
     }
 } else {
     http_response_code(400);
-    echo json_encode(array("message" => "Incomplete data. Please enter email and password."));
+    echo json_encode(array("message" => "Incomplete data. Please enter username and password."));
 }
 ?>

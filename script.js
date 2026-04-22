@@ -1,7 +1,5 @@
-// ========== GOOGLE CLIENT ID ==========
 const MY_CLIENT_ID = "556226911506-s859prkmlvqe54slrcfek6cdlga1csen.apps.googleusercontent.com";
 
-// ========== SESSION MANAGEMENT ==========
 const SESSION_DURATION = 30 * 60 * 1000;
 const WARN_BEFORE = 5 * 60 * 1000;
 
@@ -94,7 +92,7 @@ function autoLogout() {
 
   const btn = document.getElementById("authBtn");
   if (btn) {
-    btn.textContent = "Login/Register";
+    btn.textContent = "Login";
     btn.href = "register.html";
     btn.onclick = null;
   }
@@ -117,32 +115,32 @@ function checkAuth() {
 }
 checkAuth();
 
-// ========== GOOGLE SIGN-IN ==========
 window.onload = function () {
-  if (typeof google !== "undefined" && google.accounts) {
-    google.accounts.id.initialize({
-      client_id: MY_CLIENT_ID,
-      callback: handleCredentialResponse
-    });
-
-    // FIX: Render Google button into the correct container if it exists
-    const googleBtnDiv = document.getElementById("googleBtn");
-    if (googleBtnDiv) {
-      google.accounts.id.renderButton(googleBtnDiv, {
-        theme: "outline",
-        size: "large",
-        width: "100%",
-        shape: "pill"
+  function initGoogleBtn() {
+    if (typeof google !== "undefined" && google.accounts) {
+      google.accounts.id.initialize({
+        client_id: MY_CLIENT_ID,
+        callback: handleCredentialResponse
       });
+
+      const googleBtnDiv = document.getElementById("googleBtn");
+      if (googleBtnDiv) {
+        let btnWidth = googleBtnDiv.parentElement ? googleBtnDiv.parentElement.offsetWidth : 300;
+        if (btnWidth < 200) btnWidth = 200;
+        if (btnWidth > 400) btnWidth = 400;
+
+        google.accounts.id.renderButton(googleBtnDiv, {
+          theme: "outline",
+          size: "large",
+          width: btnWidth,
+          shape: "pill"
+        });
+      }
+    } else {
+      setTimeout(initGoogleBtn, 100);
     }
-
-    // FIX: Wire up the fake Google buttons on login/register pages
-    document.querySelectorAll(".google-signin-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        google.accounts.id.prompt();
-      });
-    });
   }
+  initGoogleBtn();
 
   initHomePage();
   initAboutPage();
@@ -152,7 +150,6 @@ window.onload = function () {
   initRegisterPage();
   initMobileMenu();
 
-  // FIX: Wire up all toggle-pw buttons via data-target attribute
   document.querySelectorAll(".toggle-pw").forEach(btn => {
     btn.addEventListener("click", function () {
       const targetId = this.dataset.target;
@@ -181,16 +178,15 @@ function handleCredentialResponse(response) {
   sessionStorage.setItem("loginTime", Date.now().toString());
   startSessionTimer();
 
-  const fullNameInput = document.getElementById("fullname");
-  if (fullNameInput) {
-    fullNameInput.value = payload.name;
+  const usernameInput = document.getElementById("username");
+  if (usernameInput) {
+    usernameInput.value = payload.name;
     document.getElementById("email").value = payload.email;
   } else {
     window.location.href = "portfolio.html";
   }
 }
 
-// ========== LOGIN FORM ==========
 document.getElementById("loginForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const emailInput = (document.getElementById("loginUser") || document.getElementById("username"))?.value?.trim();
@@ -203,7 +199,6 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
 
   try {
-    // FIX: Use relative path so fetch always goes to the same origin (avoids CORS/CSP issues)
     const response = await fetch("php/api_login.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -222,27 +217,24 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
       sessionStorage.removeItem("redirectAfterLogin");
       window.location.href = redirect;
     } else {
-      showAuthError(result.message || "Invalid email or password.");
+      showAuthError(result.message || "Invalid username or password.");
       btn.disabled = false;
       btn.innerHTML = originalText;
     }
   } catch (error) {
-    // FIX: More descriptive error to help debug
     showAuthError("Network error: Could not reach the server. Make sure PHP is running and the path php/api_login.php is correct.");
     btn.disabled = false;
     btn.innerHTML = originalText;
   }
 });
 
-// ========== REGISTER FORM ==========
 document.getElementById("registerForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
-  const fullName = document.getElementById("fullname").value.trim();
+  const username = document.getElementById("username").value.trim();
   const email = document.getElementById("email").value.trim();
   const pass = document.getElementById("regPassword").value;
   const confirmPass = document.getElementById("confirmPass").value;
 
-  // FIX: Also validate confirm password before submitting
   if (pass !== confirmPass) {
     showAuthError("Passwords do not match.");
     return;
@@ -263,7 +255,7 @@ document.getElementById("registerForm")?.addEventListener("submit", async functi
     const response = await fetch("php/api_register.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullname: fullName, email: email, password: pass })
+      body: JSON.stringify({ fullname: username, email: email, password: pass })
     });
 
     const result = await response.json();
@@ -402,7 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
       logout();
     };
   } else {
-    authBtn.textContent = "Login/Register";
+    authBtn.textContent = "Login";
     authBtn.href = "register.html";
     authBtn.onclick = null;
   }
@@ -429,28 +421,129 @@ function parseJwt(token) {
   ));
 }
 
-// ========== PROJECTS DATA ==========
 const PROJECTS = [
-  { badge: "PETA 2", code: "WS-L1.1S-OPB", title: "my_plainstatic_page", images: ["images/project2/p2.png"] },
-  { badge: "PETA 3", code: "WS-L1.2S-OPB", title: "my_enhanstatic_page", images: ["images/project3/p3.png", "images/project3/p3b.png"] },
-  { badge: "PETA 4", code: "WS-L1.1S-OPB", title: "My Home & Story Page", images: ["images/project4/p4.png", "images/project4/p4b.png", "images/project4/p4c.png", "images/project4/p4d.png", "images/project4/p4e.png", "images/project4/p4f.png", "images/project4/p4g.png"] },
-  { badge: "PETA 5", code: "WS101 L3S-OB", title: "Educational Portfolio Website", images: ["images/project5/p5.png", "images/project5/p5b.png", "images/project5/p5c.png", "images/project5/p5d.png", "images/project5/p5e.png"] },
-  { badge: "PETA 6", code: "EXP_OB&WO-UCEPW", title: "User-Centered Educational Portfolio", images: ["images/project6/p6.png", "images/project6/p6b.png", "images/project6/p6c.png", "images/project6/p6d.png", "images/project6/p6e.png"] },
-  { badge: "PETA 7", code: "WS101 PTL4_01", title: "Educational / Assistance Tool", images: ["images/project7/p7.png", "images/project7/p7b.png", "images/project7/p7c.png", "images/project7/p7d.png", "images/project7/p7e.png", "images/project7/p7f.png", "images/project7/p7g.png", "images/project7/p7h.png", "images/project7/p7i.png", "images/project7/p7j.png", "images/project7/p7k.png", "images/project7/p7l.png"] },
-  { badge: "PETA 8", code: "WS101-PTL5-M", title: "Basic Login Page", images: ["images/project8/p8.png"] },
-  { badge: "PETA 9", code: "WS101-PTL5.2-M", title: "Advanced Login + Registration Form", images: ["images/project9/p9.png", "images/project9/p9b.png"] },
-  { badge: "Final PETA", code: "EXM_OB-EEPW", title: "Enhanced Educational Portfolio Website", images: ["images/project10/p10.png", "images/project10/p10b.png", "images/project10/p10c.png", "images/project10/p10d.png", "images/project10/p10e.png", "images/project10/p10f.png", "images/project10/p10g.png", "images/project10/p10h.png"] }
+  {
+    badge: "PETA 1",
+    code: "WS-L1S-OPB",
+    title: "Persona Things",
+    images: ["images/project1/p1.png", "images/project1/p1b.png", "images/project1/p1c.png"]
+  },
+  {
+    badge: "PETA 2",
+    code: "WS-L1.1S-OPB",
+    title: "my_plainstatic_page",
+    images: ["images/project2/p2.png"]
+  },
+  {
+    badge: "PETA 3",
+    code: "WS-L1.2S-OPB",
+    title: "my_enhanstatic_page",
+    images: ["images/project3/p3.png", "images/project3/p3b.png"]
+  },
+  {
+    badge: "PETA 4",
+    code: "WS-L1.1S-OPB",
+    title: "My Home & Story Page",
+    images: [
+      "images/project4/p4.png", "images/project4/p4b.png", "images/project4/p4c.png",
+      "images/project4/p4d.png", "images/project4/p4e.png", "images/project4/p4f.png",
+      "images/project4/p4g.png"
+    ]
+  },
+  {
+    badge: "PETA 5",
+    code: "WS101 L3S-OB",
+    title: "Educational Portfolio Website",
+    images: [
+      "images/project5/p5.png", "images/project5/p5b.png", "images/project5/p5c.png",
+      "images/project5/p5d.png", "images/project5/p5e.png"
+    ]
+  },
+  {
+    badge: "PETA 6",
+    code: "EXP_OB&WO-UCEPW",
+    title: "User-Centered Educational Portfolio Website",
+    images: [
+      "images/project6/p6.png", "images/project6/p6b.png", "images/project6/p6c.png",
+      "images/project6/p6d.png", "images/project6/p6e.png"
+    ]
+  },
+  {
+    badge: "PETA 7",
+    code: "WS101 PTL4_01",
+    title: "Educational / Assistance Tool",
+    images: [
+      "images/project7/p7.png", "images/project7/p7b.png", "images/project7/p7c.png",
+      "images/project7/p7d.png", "images/project7/p7e.png", "images/project7/p7f.png",
+      "images/project7/p7g.png", "images/project7/p7h.png", "images/project7/p7i.png",
+      "images/project7/p7j.png", "images/project7/p7k.png", "images/project7/p7l.png"
+    ]
+  },
+  {
+    badge: "PETA 8",
+    code: "WS101-PTL5-M",
+    title: "Basic Login Page",
+    images: ["images/project8/p8.png"]
+  },
+  {
+    badge: "PETA 9",
+    code: "WS101-PTL5.2-M",
+    title: "Advanced Login Page + Registration Form",
+    images: ["images/project9/p9.png", "images/project9/p9b.png"]
+  },
+  {
+    badge: "Final PETA",
+    code: "EXM_OB-EEPW",
+    title: "Enhanced Educational Portfolio Website",
+    images: [
+      "images/project10/p10.png", "images/project10/p10b.png", "images/project10/p10c.png",
+      "images/project10/p10d.png", "images/project10/p10e.png", "images/project10/p10f.png",
+      "images/project10/p10g.png", "images/project10/p10h.png"
+    ]
+  },
+  {
+    badge: "PTL 6",
+    code: "WS101-PTL6-F",
+    title: "Creating a Website Deployment Tutorial",
+    images: [
+      "images/project11/p11.png", "images/project11/p11b.png", "images/project11/p11c.png",
+      "images/project11/p11d.png", "images/project11/p11e.png", "images/project11/p11f.png",
+      "images/project11/p11g.png", "images/project11/p11h.png"
+    ],
+    isVideo: false
+  },
+  {
+    badge: "PTL 7–8",
+    code: "WS101-PTL7-8F",
+    title: "TUT for Setting Up DNS & HTTPS/SSL & BackUp",
+    images: [
+      "images/project12/p12.png", "images/project12/p12b.png", "images/project12/p12c.png",
+      "images/project12/p12d.png", "images/project12/p12e.png", "images/project12/p12f.png",
+      "images/project12/p12g.jpg", "images/project12/p12h.png", "images/project12/p12i.png"
+    ],
+    isVideo: false
+  },
+  {
+    badge: "Final EXF",
+    code: "EXF_OB-LEPW",
+    title: "Live Educational Portfolio Website",
+    images: [
+      "images/project13/p13.png",  "images/project13/p13b.png",
+      "images/project13/p13c.png", "images/project13/p13d.png",
+      "images/project13/p13e.png", "images/project13/p13f.png",
+      "images/project13/p13g.png", "images/project13/p13h.png",
+      "images/project13/p13i.png", "images/project13/p13j.png",
+      "images/project13/p13k.png"
+    ]
+  }
 ];
 
 const cIdx = {};
 
-function slideOf(carousel) {
-  return cIdx[carousel.dataset.idx] || 0;
-}
-
 function setSlide(carousel, n) {
   const idx = carousel.dataset.idx;
-  const total = carousel.querySelectorAll(".p-carousel-slide").length;
+  const slides = carousel.querySelectorAll(".p-carousel-slide");
+  const total = slides.length;
   if (total <= 1) return;
   n = ((n % total) + total) % total;
   cIdx[idx] = n;
@@ -460,17 +553,13 @@ function setSlide(carousel, n) {
   if (cnt) cnt.textContent = `${n + 1} / ${total}`;
 }
 
-function goSlide(e, btn, dir) {
-  e.stopPropagation();
-  const c = btn.closest(".p-carousel");
-  setSlide(c, (cIdx[c.dataset.idx] || 0) + dir);
-}
-
 let lbP = 0, lbI = 0;
 
-function openLb(projIdx, imgIdx) {
+function openLb(projIdx, startSlide) {
+  const p = PROJECTS[projIdx];
+  if (!p) return;
   lbP = projIdx;
-  lbI = imgIdx || 0;
+  lbI = (startSlide !== undefined ? startSlide : 0);
   refreshLb();
   document.getElementById("lightbox").classList.add("open");
   document.body.style.overflow = "hidden";
@@ -479,8 +568,28 @@ function openLb(projIdx, imgIdx) {
 function refreshLb() {
   const p = PROJECTS[lbP];
   const total = p.images.length;
-  document.getElementById("lb-img").src = p.images[lbI];
-  document.getElementById("lb-img").alt = p.title;
+  
+  const imgEl = document.getElementById("lb-img");
+  const vidEl = document.getElementById("lb-video");
+
+  if (p.isVideo) {
+    if (imgEl) imgEl.style.display = "none";
+    if (vidEl) {
+      vidEl.style.display = "block";
+      vidEl.src = p.images[lbI];
+    }
+  } else {
+    if (vidEl) {
+      vidEl.style.display = "none";
+      vidEl.pause();
+    }
+    if (imgEl) {
+      imgEl.style.display = "block";
+      imgEl.src = p.images[lbI];
+      imgEl.alt = p.title;
+    }
+  }
+
   document.getElementById("lb-badge").textContent = p.badge;
   document.getElementById("lb-code").textContent = p.code;
   document.getElementById("lb-title").textContent = p.title;
@@ -498,21 +607,96 @@ function lbNav(dir) {
 function closeLb() {
   document.getElementById("lightbox")?.classList.remove("open");
   document.body.style.overflow = "";
+  const vidEl = document.getElementById("lb-video");
+  if (vidEl) vidEl.pause();
 }
 
-function closeLbOutside(e) {
-  if (e.target === document.getElementById("lightbox")) closeLb();
-}
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".p-carousel").forEach(carousel => {
+    const projIdx = parseInt(carousel.dataset.idx, 10);
+
+    carousel.addEventListener("click", (e) => {
+      if (e.target.closest(".p-arrow") || e.target.closest("button.lightbox-close") || e.target.closest("audio")) return;
+
+      const p = PROJECTS[projIdx];
+      if (!p) return;
+
+      openLb(projIdx, cIdx[String(projIdx)] || 0);
+    });
+
+    carousel.querySelectorAll(".p-arrow.prev").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const cur = cIdx[String(projIdx)] || 0;
+        setSlide(carousel, cur - 1);
+      });
+    });
+
+    carousel.querySelectorAll(".p-arrow.next").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const cur = cIdx[String(projIdx)] || 0;
+        setSlide(carousel, cur + 1);
+      });
+    });
+  });
+
+  const lb = document.getElementById("lightbox");
+  if (lb) {
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb) closeLb();
+    });
+  }
+
+  const lbClose = document.querySelector(".lightbox-close");
+  if (lbClose) lbClose.addEventListener("click", closeLb);
+
+  const lbPrev = document.getElementById("lb-prev");
+  if (lbPrev) lbPrev.addEventListener("click", () => lbNav(-1));
+
+  const lbNext = document.getElementById("lb-next");
+  if (lbNext) lbNext.addEventListener("click", () => lbNav(+1));
+});
 
 document.addEventListener("keydown", e => {
-  if (!document.getElementById("lightbox")?.classList.contains("open")) return;
   if (e.key === "Escape") closeLb();
+  if (!document.getElementById("lightbox")?.classList.contains("open")) return;
   if (e.key === "ArrowLeft") lbNav(-1);
   if (e.key === "ArrowRight") lbNav(+1);
 });
 
-// ========== PORTFOLIO PAGE INIT ==========
 function initPortfolioPage() {
+  // Project Filtering
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove active class from all
+      filterBtns.forEach(b => b.classList.remove('active'));
+      // Add active class to clicked
+      btn.classList.add('active');
+
+      const filterValue = btn.getAttribute('data-filter');
+
+      projectCards.forEach(card => {
+        if (filterValue === 'all') {
+          card.style.display = 'block';
+          setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+        } else {
+          if (card.getAttribute('data-term') === filterValue) {
+            card.style.display = 'block';
+            setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(16px)';
+            setTimeout(() => { card.style.display = 'none'; }, 300);
+          }
+        }
+      });
+    });
+  });
+
   document.querySelectorAll(".show-more").forEach(btn => {
     btn.addEventListener("click", () => {
       const desc = btn.closest(".p-info").querySelector(".description");
@@ -558,21 +742,20 @@ function initPortfolioPage() {
     document.querySelectorAll(".visit-menu").forEach(m => m.style.display = "none");
   });
 
-  const vidSelect = document.getElementById('vid-select');
+  const vidSelect = document.getElementById("vid-select");
   if (vidSelect) {
-    vidSelect.addEventListener('change', function () {
+    vidSelect.addEventListener("change", function () {
       const opt = this.options[this.selectedIndex];
-      const video = document.getElementById('main-video');
-      const src = document.getElementById('main-video-src');
+      const video = document.getElementById("main-video");
+      const src = document.getElementById("main-video-src");
       src.src = opt.value;
       video.load();
-      document.getElementById('vid-title').textContent = opt.dataset.title;
-      document.getElementById('vid-subtitle').textContent = opt.dataset.sub;
+      document.getElementById("vid-title").textContent = opt.dataset.title;
+      document.getElementById("vid-subtitle").textContent = opt.dataset.sub;
     });
   }
 }
 
-// ========== HOME PAGE INIT ==========
 function initHomePage() {
   const observer = new IntersectionObserver(entries => {
     entries.forEach((e, i) => {
@@ -594,7 +777,6 @@ function initHomePage() {
   });
 }
 
-// ========== ABOUT PAGE INIT ==========
 function initAboutPage() {
   const bars = document.querySelectorAll(".skill-bar");
   const bObs = new IntersectionObserver(entries => {
@@ -624,21 +806,19 @@ function initAboutPage() {
   });
 }
 
-// ========== CONTACT PAGE INIT ==========
 function initContactPage() {
-  const fullname = document.getElementById('fullname');
-  const email = document.getElementById('email');
-  const subject = document.getElementById('subject');
-  const message = document.getElementById('message');
+  const fullname = document.getElementById("fullname");
+  const email = document.getElementById("email");
+  const subject = document.getElementById("subject");
+  const message = document.getElementById("message");
 
-  if (fullname) fullname.addEventListener('blur', () => validateContact('fullname', 'fullname-err', v => v.length > 0));
-  if (email) email.addEventListener('blur', () => validateContact('email', 'email-err', v => isEmailContact(v)));
-  if (subject) subject.addEventListener('blur', () => validateContact('subject', 'subject-err', v => v.length > 0));
-  if (message) message.addEventListener('blur', () => validateContact('message', 'message-err', v => v.length >= 10));
+  if (fullname) fullname.addEventListener("blur", () => validateContact("fullname", "fullname-err", v => v.length > 0));
+  if (email) email.addEventListener("blur", () => validateContact("email", "email-err", v => isEmailContact(v)));
+  if (subject) subject.addEventListener("blur", () => validateContact("subject", "subject-err", v => v.length > 0));
+  if (message) message.addEventListener("blur", () => validateContact("message", "message-err", v => v.length >= 10));
 
-  const submitBtn = document.getElementById('submitBtn');
+  const submitBtn = document.getElementById("submitBtn");
   if (submitBtn) {
-    // FIX: Remove inline onclick from HTML and wire here to avoid double-firing
     submitBtn.onclick = handleSubmit;
   }
 }
@@ -647,8 +827,8 @@ function validateContact(id, errId, fn) {
   const el = document.getElementById(id);
   const err = document.getElementById(errId);
   const ok = fn(el.value.trim());
-  if (el) el.classList.toggle('error', !ok);
-  if (err) err.classList.toggle('show', !ok);
+  if (el) el.classList.toggle("error", !ok);
+  if (err) err.classList.toggle("show", !ok);
   return ok;
 }
 
@@ -658,29 +838,29 @@ function isEmailContact(v) {
 
 async function handleSubmit() {
   const ok = [
-    validateContact('fullname', 'fullname-err', v => v.length > 0),
-    validateContact('email',    'email-err',    v => isEmailContact(v)),
-    validateContact('subject',  'subject-err',  v => v.length > 0),
-    validateContact('message',  'message-err',  v => v.length >= 10),
+    validateContact("fullname", "fullname-err", v => v.length > 0),
+    validateContact("email",    "email-err",    v => isEmailContact(v)),
+    validateContact("subject",  "subject-err",  v => v.length > 0),
+    validateContact("message",  "message-err",  v => v.length >= 10),
   ].every(Boolean);
 
   if (!ok) return;
 
-  const btn = document.getElementById('submitBtn');
+  const btn = document.getElementById("submitBtn");
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
   const payload = {
-    fullname: document.getElementById('fullname').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    subject: document.getElementById('subject').value.trim(),
-    message: document.getElementById('message').value.trim()
+    fullname: document.getElementById("fullname").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    subject: document.getElementById("subject").value.trim(),
+    message: document.getElementById("message").value.trim()
   };
 
   try {
-    const response = await fetch('php/api_contact.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("php/api_contact.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
@@ -690,47 +870,45 @@ async function handleSubmit() {
     btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
 
     if (response.ok) {
-      ['fullname', 'email', 'subject', 'message'].forEach(id => {
+      ["fullname", "email", "subject", "message"].forEach(id => {
         const el = document.getElementById(id);
-        if (el) { el.value = ''; el.classList.remove('error'); }
+        if (el) { el.value = ""; el.classList.remove("error"); }
       });
-      ['fullname-err', 'email-err', 'subject-err', 'message-err'].forEach(id => {
+      ["fullname-err", "email-err", "subject-err", "message-err"].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.classList.remove('show');
+        if (el) el.classList.remove("show");
       });
 
-      const toast = document.getElementById('toast');
+      const toast = document.getElementById("toast");
       if (toast) {
         toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + result.message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3500);
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3500);
       }
     } else {
-      alert('Error: ' + result.message);
+      alert("Error: " + result.message);
     }
   } catch (error) {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
-    alert('Network error: Could not reach the server.');
+    alert("Network error: Could not reach the server.");
   }
 }
 
-// ========== LOGIN PAGE INIT ==========
 function initLoginPage() {
-  const loginUser = document.getElementById('loginUser');
-  const loginPass = document.getElementById('loginPass');
+  const loginUser = document.getElementById("loginUser");
+  const loginPass = document.getElementById("loginPass");
 
-  if (loginUser) loginUser.addEventListener('blur', () => validateLogin('loginUser', 'loginUser-err', v => isEmailLogin(v)));
-  if (loginPass) loginPass.addEventListener('blur', () => validateLogin('loginPass', 'loginPass-err', v => v.length > 0));
+  if (loginUser) loginUser.addEventListener("blur", () => validateLogin("loginUser", "loginUser-err", v => v.length > 0));
+  if (loginPass) loginPass.addEventListener("blur", () => validateLogin("loginPass", "loginPass-err", v => v.length > 0));
 
-  // togglePw is now handled globally via .toggle-pw data-target in window.onload
   window.togglePw = function (id, btn) {
     const input = document.getElementById(id);
-    const icon = btn.querySelector('i');
-    const isHidden = input.type === 'password';
-    input.type = isHidden ? 'text' : 'password';
-    icon.classList.toggle('fa-eye', !isHidden);
-    icon.classList.toggle('fa-eye-slash', isHidden);
+    const icon = btn.querySelector("i");
+    const isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+    icon.classList.toggle("fa-eye", !isHidden);
+    icon.classList.toggle("fa-eye-slash", isHidden);
   };
 }
 
@@ -738,29 +916,29 @@ function validateLogin(id, errId, fn) {
   const el = document.getElementById(id);
   const err = document.getElementById(errId);
   const ok = fn(el.value.trim());
-  if (el) el.classList.toggle('error', !ok);
-  if (err) err.classList.toggle('show', !ok);
+  if (el) el.classList.toggle("error", !ok);
+  if (err) err.classList.toggle("show", !ok);
   return ok;
 }
+
 function isEmailLogin(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
-// ========== REGISTER PAGE INIT ==========
 function initRegisterPage() {
-  const fullname = document.getElementById('fullname');
-  const email = document.getElementById('email');
-  const regPassword = document.getElementById('regPassword');
-  const confirmPass = document.getElementById('confirmPass');
+  const username = document.getElementById("username");
+  const email = document.getElementById("email");
+  const regPassword = document.getElementById("regPassword");
+  const confirmPass = document.getElementById("confirmPass");
 
-  if (fullname) fullname.addEventListener('blur', () => validateReg('fullname', 'fullname-err', v => v.length > 0));
-  if (email) email.addEventListener('blur', () => validateReg('email', 'email-err', v => isEmailReg(v)));
-  if (regPassword) regPassword.addEventListener('blur', () => validateReg('regPassword', 'pass-err', v => v.length >= 8));
-  if (confirmPass) confirmPass.addEventListener('blur', () => {
-    const pass = document.getElementById('regPassword').value;
-    const el = document.getElementById('confirmPass');
-    const err = document.getElementById('confirm-err');
+  if (username) username.addEventListener("blur", () => validateReg("username", "username-err", v => v.length > 0));
+  if (email) email.addEventListener("blur", () => validateReg("email", "email-err", v => isEmailReg(v)));
+  if (regPassword) regPassword.addEventListener("blur", () => validateReg("regPassword", "pass-err", v => v.length >= 8));
+  if (confirmPass) confirmPass.addEventListener("blur", () => {
+    const pass = document.getElementById("regPassword").value;
+    const el = document.getElementById("confirmPass");
+    const err = document.getElementById("confirm-err");
     const ok = pass === el.value && el.value.length > 0;
-    if (el) el.classList.toggle('error', !ok);
-    if (err) err.classList.toggle('show', !ok);
+    if (el) el.classList.toggle("error", !ok);
+    if (err) err.classList.toggle("show", !ok);
   });
 
   window.checkStrength = function (val) {
@@ -785,7 +963,6 @@ function initRegisterPage() {
     if (lbl) lbl.style.color = lvl.bg === "transparent" ? "var(--muted)" : lvl.bg;
   };
 
-  // togglePw handled globally in window.onload
   window.togglePw = function (id, btn) {
     const input = document.getElementById(id);
     const icon = btn.querySelector("i");
@@ -800,13 +977,13 @@ function validateReg(id, errId, fn) {
   const el = document.getElementById(id);
   const err = document.getElementById(errId);
   const ok = fn(el.value.trim());
-  if (el) el.classList.toggle('error', !ok);
-  if (err) err.classList.toggle('show', !ok);
+  if (el) el.classList.toggle("error", !ok);
+  if (err) err.classList.toggle("show", !ok);
   return ok;
 }
+
 function isEmailReg(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
-// ========== MOBILE MENU ==========
 function initMobileMenu() {
   const menuBtn = document.querySelector("#mobile-menu");
   const navListEl = document.querySelector("#nav-list");
@@ -822,7 +999,6 @@ function initMobileMenu() {
   }
 }
 
-// ========== CSS ANIMATIONS ==========
 const style = document.createElement("style");
 style.textContent = `
   @keyframes slideUp  { from { transform:translateX(-50%) translateY(16px); opacity:0; } to { transform:translateX(-50%) translateY(0); opacity:1; } }
