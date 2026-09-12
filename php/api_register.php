@@ -11,7 +11,6 @@ $data = json_decode(file_get_contents("php://input"));
 
 if (!empty($data->fullname) && !empty($data->email) && !empty($data->password)) {
     
-    // Check if email already exists
     $check_query = "SELECT id FROM users WHERE email = :email";
     $check_stmt = $conn->prepare($check_query);
     $email = htmlspecialchars(strip_tags($data->email));
@@ -19,7 +18,7 @@ if (!empty($data->fullname) && !empty($data->email) && !empty($data->password)) 
     $check_stmt->execute();
     
     if($check_stmt->rowCount() > 0) {
-        http_response_code(409); // Conflict
+        http_response_code(409); 
         echo json_encode(array("message" => "Email already exists."));
         exit();
     }
@@ -28,7 +27,6 @@ if (!empty($data->fullname) && !empty($data->email) && !empty($data->password)) 
     $stmt = $conn->prepare($query);
     
     $fullname = htmlspecialchars(strip_tags($data->fullname));
-    // Hash the password for security
     $password_hash = password_hash($data->password, PASSWORD_BCRYPT);
     
     $stmt->bindParam(":fullname", $fullname);
