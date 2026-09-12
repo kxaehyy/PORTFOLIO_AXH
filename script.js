@@ -1,7 +1,5 @@
-// ========== GOOGLE CLIENT ID ==========
 const MY_CLIENT_ID = "556226911506-s859prkmlvqe54slrcfek6cdlga1csen.apps.googleusercontent.com";
 
-// ========== SESSION MANAGEMENT ==========
 const SESSION_DURATION = 30 * 60 * 1000;
 const WARN_BEFORE = 5 * 60 * 1000;
 
@@ -117,7 +115,6 @@ function checkAuth() {
 }
 checkAuth();
 
-// ========== GOOGLE SIGN-IN ==========
 window.onload = function () {
   if (typeof google !== "undefined" && google.accounts) {
     google.accounts.id.initialize({
@@ -166,7 +163,6 @@ function handleCredentialResponse(response) {
   }
 }
 
-// ========== LOGIN FORM ==========
 document.getElementById("loginForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const emailInput = (document.getElementById("loginUser") || document.getElementById("username"))?.value?.trim();
@@ -208,7 +204,6 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
   }
 });
 
-// ========== REGISTER FORM ==========
 document.getElementById("registerForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const fullName = document.getElementById("fullname").value.trim();
@@ -397,7 +392,6 @@ function parseJwt(token) {
   ));
 }
 
-// ========== PROJECTS DATA ==========
 const PROJECTS = [
   { badge: "PETA 2", code: "WS-L1.1S-OPB", title: "my_plainstatic_page", images: ["images/project2/p2.png"] },
   { badge: "PETA 3", code: "WS-L1.2S-OPB", title: "my_enhanstatic_page", images: ["images/project3/p3.png", "images/project3/p3b.png"] },
@@ -479,7 +473,6 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowRight") lbNav(+1);
 });
 
-// ========== PORTFOLIO PAGE INIT ==========
 function initPortfolioPage() {
   document.querySelectorAll(".show-more").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -541,7 +534,6 @@ function initPortfolioPage() {
   }
 }
 
-// ========== HOME PAGE INIT ==========
 function initHomePage() {
   const observer = new IntersectionObserver(entries => {
     entries.forEach((e, i) => {
@@ -563,7 +555,6 @@ function initHomePage() {
   });
 }
 
-// ========== ABOUT PAGE INIT ==========
 function initAboutPage() {
   const bars = document.querySelectorAll(".skill-bar");
   const bObs = new IntersectionObserver(entries => {

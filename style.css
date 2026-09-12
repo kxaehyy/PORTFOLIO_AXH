@@ -1826,13 +1826,84 @@ body {
 .form-box {
     position: relative;
     z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
     width: 100%;
-    max-width: 400px;
-    padding: 44px 40px;
+    max-width: 860px;
+    min-height: 480px;
+    padding: 0;
     background: var(--surface);
     border: 1px solid var(--mint-border);
     border-radius: 16px;
+    overflow: hidden;
     animation: fadeUp 0.6s ease both;
+}
+
+.form-visual {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 44px 40px;
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, rgba(61,255,160,0.09) 0%, transparent 65%),
+      var(--dark);
+    border-right: 1px solid var(--mint-border);
+    overflow: hidden;
+}
+
+.form-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(61,255,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(61,255,160,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+
+.form-visual-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.form-visual .form-logo {
+    text-align: left;
+    margin-bottom: 32px;
+}
+
+.form-visual h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--white);
+    margin-bottom: 12px;
+}
+
+.form-visual h3 span {
+    color: var(--mint);
+}
+
+.form-visual p {
+    font-size: 0.82rem;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 300px;
+    margin-bottom: 24px;
+}
+
+.form-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 44px 44px;
+    overflow-y: auto;
+}
+
+.form-content .form-logo {
+    display: none;
 }
 
 .form-logo {
@@ -2102,6 +2173,26 @@ body {
 .terms a {
     color: var(--mint);
     text-decoration: none;
+}
+
+@media (max-width: 860px) {
+    .form-box {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        min-height: 0;
+    }
+
+    .form-visual {
+        display: none;
+    }
+
+    .form-content .form-logo {
+        display: block;
+    }
+
+    .form-content {
+        padding: 40px 32px;
+    }
 }
 
 footer {
