@@ -178,7 +178,7 @@ function handleCredentialResponse(response) {
   sessionStorage.setItem("loginTime", Date.now().toString());
   startSessionTimer();
 
-  const usernameInput = document.getElementById("username");
+  const usernameInput = document.getElementById("fullname");
   if (usernameInput) {
     usernameInput.value = payload.name;
     document.getElementById("email").value = payload.email;
@@ -189,7 +189,7 @@ function handleCredentialResponse(response) {
 
 document.getElementById("loginForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
-  const emailInput = (document.getElementById("loginUser") || document.getElementById("username"))?.value?.trim();
+  const emailInput = (document.getElementById("loginUser") || document.getElementById("fullname"))?.value?.trim();
   const passInput = (document.getElementById("loginPass") || document.getElementById("password"))?.value;
 
   const btn = document.getElementById("loginBtn");
@@ -230,7 +230,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
 
 document.getElementById("registerForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
-  const username = document.getElementById("username").value.trim();
+  const username = document.getElementById("fullname").value.trim();
   const email = document.getElementById("email").value.trim();
   const pass = document.getElementById("regPassword").value;
   const confirmPass = document.getElementById("confirmPass").value;
@@ -666,15 +666,12 @@ document.addEventListener("keydown", e => {
 });
 
 function initPortfolioPage() {
-  // Project Filtering
   const filterBtns = document.querySelectorAll('.filter-btn');
   const projectCards = document.querySelectorAll('.project-card');
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Remove active class from all
       filterBtns.forEach(b => b.classList.remove('active'));
-      // Add active class to clicked
       btn.classList.add('active');
 
       const filterValue = btn.getAttribute('data-filter');
@@ -924,12 +921,12 @@ function validateLogin(id, errId, fn) {
 function isEmailLogin(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
 function initRegisterPage() {
-  const username = document.getElementById("username");
+  const username = document.getElementById("fullname"); 
   const email = document.getElementById("email");
   const regPassword = document.getElementById("regPassword");
   const confirmPass = document.getElementById("confirmPass");
 
-  if (username) username.addEventListener("blur", () => validateReg("username", "username-err", v => v.length > 0));
+  if (username) username.addEventListener("blur", () => validateReg("fullname", "fullname-err", v => v.length > 0));
   if (email) email.addEventListener("blur", () => validateReg("email", "email-err", v => isEmailReg(v)));
   if (regPassword) regPassword.addEventListener("blur", () => validateReg("regPassword", "pass-err", v => v.length >= 8));
   if (confirmPass) confirmPass.addEventListener("blur", () => {

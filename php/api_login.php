@@ -10,8 +10,6 @@ include_once 'db_config.php';
 $data = json_decode(file_get_contents("php://input"));
 
 if (!empty($data->email) && !empty($data->password)) {
-    
-    // Check if the input matches email or fullname (username)
     $query = "SELECT id, fullname, password, email FROM users WHERE email = :identifier OR fullname = :identifier LIMIT 0,1";
     $stmt = $conn->prepare($query);
     
